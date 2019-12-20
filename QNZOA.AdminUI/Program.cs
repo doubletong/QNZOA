@@ -24,6 +24,7 @@ namespace QNZOA.AdminUI
                 {
                     webBuilder.UseStartup<Startup>()
                     .UseUrls("http://localhost:4001"); 
+
                 });
     }
 }
