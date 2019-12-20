@@ -1,0 +1,47 @@
+﻿@inherits LayoutComponentBase
+@inject ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <div class="top-row px-4">
+        <div class="row topbar align-items-center">
+            <div class="col-md">
+                @if (!string.IsNullOrEmpty(username))
+                {
+                    <div class="logined">您好，<span>@username</span>！<button @onclick="LoginOut" class="btn btn-outline-secondary btn-sm"><i class="iconfont icon-logout"></i> 注销</button></div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+<BlazoredToasts />
+
+@code {
+
+    string username = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        username = await localStorage.GetItemAsync<string>("username");
+        if (string.IsNullOrEmpty(username))
+        {
+            NavigationManager.NavigateTo("/accounts/login");
+        }
+        StateHasChanged();
+    }
+
+    private async Task LoginOut()
+    {
+          await localStorage.RemoveItemAsync("username");
+          NavigationManager.NavigateTo("/accounts/login");
+    }
+       
+}

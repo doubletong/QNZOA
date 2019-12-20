@@ -1,0 +1,99 @@
+﻿<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-end">
+        <li class="page-item">
+            <button class="page-link" @onclick="() => PagerButtonClicked(GetPrevLink())" tabindex="-1">上一页</button>
+        </li>
+        @for (int i = StartIndex(); i <= EndIndex(); i++)
+        {
+            int page = i + 1;
+
+            if (i == PageIndex)
+            {
+                <li class="page-item active" autofocus>
+                    <button class="page-link" type="button">@(page) <span class="sr-only">(current)</span></button>
+                </li>
+            }
+            else
+            {
+                <li class="page-item"><button class="page-link" type="button" @onclick="() => PagerButtonClicked(page)">@(page) </button></li>
+            }
+        }
+
+        <li class="page-item">
+            <button class="page-link" type="button" @onclick="() => PagerButtonClicked(GetNextLink())">下一页</button>
+        </li>
+    </ul>
+</nav>
+
+@code {
+    
+    [Parameter]
+    public   int PageSize { get; set; }
+    [Parameter]
+     public   int ShowPageCount { get; set; }
+    [Parameter]
+    public  int PageIndex { get; set; }
+    [Parameter]
+     public   int LastPageIndex { get; set; }
+
+
+    [Parameter]
+    public  Action<int> PageChanged { get; set; }
+
+
+    public int StartIndex()
+    {
+        var d = ShowPageCount / 2;
+        var frontNum = (int)Math.Floor( (double)d);
+
+        var startIndex = PageIndex - frontNum;
+        if (startIndex <= 0)
+        {
+            return 0;
+        }
+        return startIndex-1;
+    }
+
+    public int EndIndex()
+    {
+        var d = ShowPageCount / 2;
+        var endNum = (int)Math.Ceiling((double)d);
+
+        var endIndex = PageIndex + endNum;
+        if (endIndex > LastPageIndex)
+        {
+            return LastPageIndex;
+        }
+        return endIndex;
+    }
+
+    public int GetPrevLink()
+    {
+        if (PageIndex > 1)
+        {
+            return PageIndex;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+    public int GetNextLink()
+    {
+
+        if (PageIndex < LastPageIndex)
+        {
+            return PageIndex + 2;
+        }
+        else
+        {
+            return (int)LastPageIndex+1;
+        }
+    }
+
+    protected void PagerButtonClicked(int page)
+    {
+        PageChanged?.Invoke(page);
+    }
+}
