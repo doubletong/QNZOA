@@ -3,62 +3,70 @@
 
 @inject IToastService toastService
 @inject IAccountService accountService
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @inject Microsoft.Extensions.Configuration.IConfiguration configuration
-    <div class="page-login">
+<div class="page-login">
 
-        <div class="loginbox">
-            <div class="card">
-                <h5 class="card-header">用户登录</h5>
-                <div class="card-body">
-                    <EditForm Model="@loginIM" OnValidSubmit="@HandleValidSubmit">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-                        <div class="form-group">
-                            <label for="Username">用户名</label>
-                            <InputText id="Username" @bind-Value="loginIM.Username" class="form-control" />
+    <div class="loginbox">
+        <div class="card">
+            <h5 class="card-header">用户登录</h5>
+            <div class="card-body">
+                <EditForm Model="@loginIM" OnValidSubmit="@HandleValidSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group">
+                        <label for="Username">用户名</label>
+                        <InputText id="Username" @bind-Value="loginIM.Username" class="form-control" />
 
-                        </div>
-                        <div class="form-group">
-                            <label for="Password">密码</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">密码</label>
 
-                            <InputText type="password" id="Password" @bind-Value="loginIM.Password" class="form-control" />
+                        <InputText type="password" id="Password" @bind-Value="loginIM.Password" class="form-control" />
 
-                        </div>
-                        <div class="form-group form-check">
-                            <InputCheckbox @bind-Value="@loginIM.IsValidate" class="form-check-input" id="IsValidate" />
-                            <label class="form-check-label" for="IsValidate">记住我</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">登录</button>
+                    </div>
+                    <div class="form-group form-check">
+                        <InputCheckbox @bind-Value="@loginIM.IsValidate" class="form-check-input" id="IsValidate" />
+                        <label class="form-check-label" for="IsValidate">记住我</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">登录</button>
 
-                    </EditForm>
-                </div>
+                </EditForm>
             </div>
-
         </div>
+
     </div>
+</div>
 @code {
     private LoginIM loginIM = new LoginIM { IsValidate = false };
+    AuthenticationState AuthState;
 
     private async Task HandleValidSubmit()
     {
         try
         {
-            var result = await accountService.LoginAsync(loginIM);
+            await ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticatedAsync(loginIM.Username,loginIM.Password);
+          //  await sessionStorage.SetItemAsync("username", loginIM.Username);
 
-            if (result.Status)
-            {
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                toastService.ShowError(result.Message);
-            }
+            NavigationManager.NavigateTo("/");
+            // AuthState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+            //var result = await accountService.LoginAsync(loginIM);
+
+            //if (result.Status)
+            //{
+            //    NavigationManager.NavigateTo("/");
+            //}
+            //else
+            //{
+            //    toastService.ShowError(result.Message);
+            //}
         }
         catch (Exception ex)
         {
-               toastService.ShowError(ex.Message);
+            toastService.ShowError(ex.Message);
 
         }
     }

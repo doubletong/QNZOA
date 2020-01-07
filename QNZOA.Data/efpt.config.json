@@ -1,0 +1,102 @@
+﻿{
+   "ContextClassName": "SIGOAContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "DoNotCombineNamespace": false,
+   "IdReplace": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": null,
+   "ProjectRootNamespace": "QNZOA.Data",
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Article]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[ArticleCategory]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Badge]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Customer]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[EmailAccount]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[EmailTemplate]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Link]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[LinkCategory]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Menu]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[MenuCategory]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Paymentlog]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Project]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[ProjectBusiness]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Role]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[RoleMenu]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[Task]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[TaskBadge]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[User]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[UserProject]"
+      },
+      {
+         "HasPrimaryKey": true,
+         "Name": "[dbo].[UserRole]"
+      }
+   ],
+   "UseDatabaseNames": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseSpatial": false
+}

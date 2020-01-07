@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="2.1.1" />
+    <PackageReference Include="Blazored.SessionStorage" Version="1.0.11" />
     <PackageReference Include="Blazored.Toast" Version="2.0.8" />
     <PackageReference Include="BlazorPagination" Version="0.2.1" />
     <PackageReference Include="Cloudcrate.AspNetCore.Blazor.Browser.Storage" Version="3.0.0" />
@@ -23,7 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\QNZOA.Data\QNZOA.Data.csproj" />
     <ProjectReference Include="..\QNZOA.Model\QNZOA.Model.csproj" />
+    <ProjectReference Include="..\SIGOA.Infrastructure\SIGOA.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

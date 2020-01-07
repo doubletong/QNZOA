@@ -246,18 +246,18 @@ else
     {
         try
         {
-            var token = await localStorage.GetItemAsync<string>("token");
-            var httpClient = clientFactory.CreateClient("QNZOA");
-            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            //var token = await localStorage.GetItemAsync<string>("token");
+            //var httpClient = clientFactory.CreateClient("QNZOA");
+            //httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            var url = $"{httpClient.BaseAddress}Customers/GetCustomers?page={page}&pageSize=10&keywords={vm.Keywords}";
-            //vm = await Http.GetAsync<CustomerPagedVM>();
-            var response = await httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            //var url = $"{httpClient.BaseAddress}Customers/GetCustomers?page={page}&pageSize=10&keywords={vm.Keywords}";
+            ////vm = await Http.GetAsync<CustomerPagedVM>();
+            //var response = await httpClient.GetAsync(url);
+            //response.EnsureSuccessStatusCode();
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            vm = JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
-            this.StateHasChanged();
+            //var responseBody = await response.Content.ReadAsStringAsync();
+            //vm = JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
+            //this.StateHasChanged();
         }
         catch (AggregateException ex)
         {

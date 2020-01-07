@@ -13,6 +13,10 @@ using QNZOA.AdminUI.Data;
 using QNZOA.AdminUI.Services;
 using Blazored.LocalStorage;
 using Blazored.Toast;
+using Microsoft.AspNetCore.Components.Authorization;
+using QNZOA.Data;
+using Microsoft.EntityFrameworkCore;
+using Blazored.SessionStorage;
 
 namespace QNZOA.AdminUI
 {
@@ -30,8 +34,13 @@ namespace QNZOA.AdminUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-          
+            services.AddDbContext<SIGOAContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+          //  services.AddDbContext<SIGOAContext>(options =>
+          //     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddBlazoredLocalStorage();
+            services.AddBlazoredSessionStorage();
             services.AddBlazoredToast();
 
             services.AddHttpClient();
@@ -51,6 +60,8 @@ namespace QNZOA.AdminUI
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             //services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<AuthenticationStateProvider, QNZAuthenticationStateProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,6 +82,9 @@ namespace QNZOA.AdminUI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
