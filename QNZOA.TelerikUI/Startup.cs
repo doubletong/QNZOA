@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,24 +9,15 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using QNZOA.AdminUI.Data;
-using QNZOA.AdminUI.Services;
-using Blazored.LocalStorage;
-using Blazored.Toast;
-using Microsoft.AspNetCore.Components.Authorization;
-using QNZOA.Data;
-using Microsoft.EntityFrameworkCore;
-using Blazored.SessionStorage;
-using AutoMapper;
+using QNZOA.TelerikUI.Data;
 
-namespace QNZOA.AdminUI
+namespace QNZOA.TelerikUI
 {
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
         }
 
         public IConfiguration Configuration { get; }
@@ -35,38 +26,10 @@ namespace QNZOA.AdminUI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SIGOAContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
-          //  services.AddDbContext<SIGOAContext>(options =>
-          //     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddBlazoredLocalStorage();
-            services.AddBlazoredSessionStorage();
-            services.AddBlazoredToast();
-
-            services.AddHttpClient();
-            services.AddHttpClient("QNZOA",client =>
-            {
-                client.BaseAddress = new Uri(Configuration["ApiURL"]);
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            });
-            services.AddHttpClient<IAccountService, AccountService>(client =>
-            {
-                client.BaseAddress = new Uri(Configuration["ApiURL"]);
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-            });
             services.AddRazorPages();
             services.AddServerSideBlazor();
-
-            services.AddAutoMapper(typeof(Startup).Assembly);
-
             services.AddSingleton<WeatherForecastService>();
-            //services.AddTransient<IAccountService, AccountService>();
-            services.AddScoped<ICustomerService, CustomerService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<AuthenticationStateProvider, QNZAuthenticationStateProvider>();
+            services.AddTelerikBlazor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,9 +50,6 @@ namespace QNZOA.AdminUI
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

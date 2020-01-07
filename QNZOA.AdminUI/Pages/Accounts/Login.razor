@@ -48,7 +48,7 @@
         try
         {
             await ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticatedAsync(loginIM.Username,loginIM.Password);
-          //  await sessionStorage.SetItemAsync("username", loginIM.Username);
+            await sessionStorage.SetItemAsync("isLogined", true);  //标记正登录
 
             NavigationManager.NavigateTo("/");
             // AuthState = await AuthenticationStateProvider.GetAuthenticationStateAsync();

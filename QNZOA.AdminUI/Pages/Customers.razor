@@ -1,6 +1,7 @@
 ﻿@page "/customers"
 @inject ILocalStorageService localStorage
 @inject IHttpClientFactory clientFactory
+@inject ICustomerService customerService
 
 <div class="row mb-3 ">
     <div class="col">
@@ -256,8 +257,8 @@ else
             //response.EnsureSuccessStatusCode();
 
             //var responseBody = await response.Content.ReadAsStringAsync();
-            //vm = JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
-            //this.StateHasChanged();
+            vm = await customerService.GetCustomersAsync(page, 10, vm.Keywords); //JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
+            this.StateHasChanged();
         }
         catch (AggregateException ex)
         {

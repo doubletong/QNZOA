@@ -109,6 +109,7 @@ namespace QNZOA.AdminUI.Services
                 {
                     await _sessionStorageService.SetItemAsync("username", username);
                     await _sessionStorageService.SetItemAsync("passwordHash", pwdHash);
+
                     IsAuthenticated = true;
 
                     identity = new ClaimsIdentity(new[]

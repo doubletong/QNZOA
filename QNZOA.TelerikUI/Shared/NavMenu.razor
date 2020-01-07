@@ -1,0 +1,95 @@
+﻿@using QNZOA.TelerikUI.Data
+@inject NavigationManager navigationManager
+
+<TelerikMenu Data="@MenuItems" OnClick="@((MenuItem item) => OnMenuItemClicked(item))">
+    <ItemTemplate Context="item">
+        @{
+            string sharedMenuItemStyle = "padding: 6px 12px; line-height: 1.4285714286;";//in a real app these styles could go into a CSS class in the site stylesheet
+            if (EqualityComparer<MenuItem>.Default.Equals(item, SelectedMenuItem))
+            {
+                <span style="@( sharedMenuItemStyle + "color: black; font-weight: bold;" )">@item.Text</span>
+            }
+            else
+            {
+                string target = "";
+                if (!IsInternalPage(item.Url))
+                {
+                    target = "_blank";
+                }
+                <NavLink target="@target" href="@item.Url" style="@sharedMenuItemStyle" class="k-link k-menu-link">@item.Text</NavLink>
+            }
+        }
+    </ItemTemplate>
+</TelerikMenu>
+
+@code {
+    public List<MenuItem> MenuItems { get; set; }
+
+    public MenuItem SelectedMenuItem { get; set; }
+
+    protected override void OnInitialized()
+    {
+        MenuItems = new List<MenuItem>()
+        {
+            new MenuItem()
+            {
+                Text = "Home",
+                Url = "/",
+            },
+            new MenuItem()
+            {
+                Text = "Fetch Data",
+                Url = "/fetchdata"
+            },
+            new MenuItem()
+            {
+                Text = "Counter",
+                Url = "/counter"
+            },
+            new MenuItem()
+            {
+                Text = "Telerik UI for Blazor",
+                Url = "https://www.telerik.com/blazor-ui",
+                Items = new List<MenuItem>()
+                {
+                    new MenuItem()
+                    {
+                        Text = "Documentation",
+                        Url = "https://docs.telerik.com/blazor-ui/introduction"
+                    },
+                    new MenuItem()
+                    {
+                        Text = "Live Demos",
+                        Url = "https://demos.telerik.com/blazor-ui"
+                    }
+                }
+            }
+        };
+
+        SelectedMenuItem = MenuItems.Find(item => CompareCurrentPageUrl(item.Url));
+
+        base.OnInitialized();
+    }
+
+    private void OnMenuItemClicked(MenuItem item)
+    {
+        if (IsInternalPage(item.Url))
+        {
+            SelectedMenuItem = item;
+        }
+    }
+
+    private bool CompareCurrentPageUrl(string urlToCopmare)
+    {
+        return navigationManager.Uri.Substring(navigationManager.BaseUri.Length - 1).Equals(urlToCopmare);
+    }
+
+    private bool IsInternalPage(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            return false;
+        }
+        return !(url.StartsWith("https://") || url.StartsWith("http://"));
+    }
+}

@@ -39,11 +39,11 @@ namespace QNZOA.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=139.199.224.18;Initial Catalog=SIGOA;Persist Security Info=True;User ID=sa;Password=sigcms#@!321");
-            }
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer("Data Source=139.199.224.18;Initial Catalog=SIGOA;Persist Security Info=True;User ID=sa;Password=sigcms#@!321");
+//            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
