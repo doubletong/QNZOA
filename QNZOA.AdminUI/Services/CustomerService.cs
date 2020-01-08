@@ -29,7 +29,7 @@ namespace QNZOA.AdminUI.Services
                 Keywords = keywords
             };
 
-            var query = _db.Customers.Include(d => d.Projects).AsQueryable();
+            var query = _db.Customers.AsNoTracking().Include(d => d.Projects).AsQueryable();
             if (!string.IsNullOrEmpty(keywords))
             {
                 query = query.Where(d => d.Name.Contains(keywords) || d.Description.Contains(keywords) || d.Phone.Contains(keywords));

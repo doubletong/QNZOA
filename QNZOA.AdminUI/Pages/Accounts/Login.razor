@@ -1,10 +1,14 @@
 ﻿@page "/accounts/login"
+@using Microsoft.AspNetCore.Components.Authorization;
+@using System.Security.Claims;
+@using SIGOA.Infrastructure;
 @inject NavigationManager NavigationManager
 
 @inject IToastService toastService
-@inject IAccountService accountService
+@*@inject IAccountService accountService*@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
+@inject IUserService userService;
 
 @inject Microsoft.Extensions.Configuration.IConfiguration configuration
 <div class="page-login">
@@ -47,10 +51,35 @@
     {
         try
         {
-            await ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticatedAsync(loginIM.Username,loginIM.Password);
-            await sessionStorage.SetItemAsync("isLogined", true);  //标记正登录
+            ClaimsIdentity identity;
 
-            NavigationManager.NavigateTo("/");
+            var checkUser = await userService.GetUserByUsernameAsync(loginIM.Username);
+
+            if (checkUser != null)
+            {
+
+                var salt = Convert.FromBase64String(checkUser.SecurityStamp);
+                var pwdHash = EncryptionHelper.HashPasswordWithSalt(loginIM.Password, salt);
+
+                if (checkUser.PasswordHash == pwdHash)
+                {
+                    await sessionStorage.SetItemAsync("username", loginIM.Username);                   
+                    await sessionStorage.SetItemAsync("currentUser", checkUser);
+
+                    ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticatedAsync(checkUser);
+                    await sessionStorage.SetItemAsync("isLogined", true);  //标记正登录
+
+                    NavigationManager.NavigateTo("/");
+                }
+             
+
+            }
+
+
+
+
+
+         
             // AuthState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
             //var result = await accountService.LoginAsync(loginIM);

@@ -59,6 +59,7 @@ namespace QNZOA.AdminUI
             });
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddTelerikBlazor();
 
             services.AddAutoMapper(typeof(Startup).Assembly);
 

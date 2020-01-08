@@ -1,38 +1,45 @@
 ﻿@inherits LayoutComponentBase
+@using System.Security.Claims;
+
 @inject ILocalStorageService localStorage
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorageService
 @inject NavigationManager NavigationManager
 @inject IUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="sidebar">
-    <NavMenu />
-</div>
 
-<div class="main">
-    <div class="top-row px-4">
-        <div class="row topbar align-items-center">
-            <div class="col-md">
-                <CascadingAuthenticationState>
-                    <AuthorizeView>
-                        <Authorized>
-                            <div class="logined">您好，<span>@context.User.Identity.Name</span>！ <button @onclick="LoginOut" class="btn btn-outline-secondary btn-sm"><i class="iconfont icon-logout"></i> 注销</button></div>
-                        </Authorized>
-                        <NotAuthorized>
-                            @*<a href="Identity/Account/Register">注册</a>*@
-                            <a href="/Accounts/Login">登录</a>
-                        </NotAuthorized>
-                    </AuthorizeView>
-                </CascadingAuthenticationState>
+<TelerikRootComponent>
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <div class="row topbar align-items-center">
+                <div class="col-md">
+                    <CascadingAuthenticationState>
+                        <AuthorizeView>
+                            <Authorized>
+                                <div class="logined">您好，<span>@context.User.Identity.Name</span>！ <button @onclick="LoginOut" class="btn btn-outline-secondary btn-sm"><i class="iconfont icon-logout"></i> 注销</button></div>
+                            </Authorized>
+                            <NotAuthorized>
+                                @*<a href="Identity/Account/Register">注册</a>*@
+                                <a href="/Accounts/Login">登录</a>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </CascadingAuthenticationState>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="content px-4">
-        @Body
+        <div class="content px-4">
+            @Body
+        </div>
+
     </div>
-</div>
+</TelerikRootComponent>
 <BlazoredToasts />
+
 
 @code {
 
@@ -41,17 +48,18 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var islogined =  await sessionStorageService.GetItemAsync<bool>("isLogined");
-        if (firstRender && !islogined)   //第一次加载和并未登录成立，从session 里读取用户信息
+        //  var islogined = await sessionStorageService.GetItemAsync<bool>("isLogined");
+        if (firstRender)   //第一次加载和并未登录成立，从session 里读取用户信息
         {
-            var username = await sessionStorageService.GetItemAsync<string>("username");
-            var passwordHash = await sessionStorageService.GetItemAsync<string>("passwordHash");
-         
-
-            await ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated2Async(username, passwordHash);
-            NavigationManager.NavigateTo("/");
+            var user = await sessionStorageService.GetItemAsync<QNZOA.Data.User>("currentUser");
+            if (user != null)
+            {
+                ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticatedAsync(user);
+                NavigationManager.NavigateTo("/");
+            }
+            
         }
-          await sessionStorageService.SetItemAsync("isLogined", false);
+        await sessionStorageService.SetItemAsync("isLogined", false);
 
     }
 
@@ -61,7 +69,7 @@
         await sessionStorageService.RemoveItemAsync("username");
         await sessionStorageService.RemoveItemAsync("passwordHash");
         ((QNZAuthenticationStateProvider)AuthenticationStateProvider).IsAuthenticated = false;
-      
+
 
         NavigationManager.NavigateTo("/accounts/login");
     }
