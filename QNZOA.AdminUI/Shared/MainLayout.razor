@@ -51,6 +51,7 @@
             await ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticated2Async(username, passwordHash);
             NavigationManager.NavigateTo("/");
         }
+          await sessionStorageService.SetItemAsync("isLogined", false);
 
     }
 
@@ -60,7 +61,7 @@
         await sessionStorageService.RemoveItemAsync("username");
         await sessionStorageService.RemoveItemAsync("passwordHash");
         ((QNZAuthenticationStateProvider)AuthenticationStateProvider).IsAuthenticated = false;
-        await sessionStorageService.SetItemAsync("isLogined", false);
+      
 
         NavigationManager.NavigateTo("/accounts/login");
     }
