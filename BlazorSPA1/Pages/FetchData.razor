@@ -1,6 +1,5 @@
 ﻿@page "/fetchdata"
 
-@using QNZOA.AdminUI.Data
 @inject WeatherForecastService ForecastService
 
 <h1>Weather forecast</h1>
@@ -39,7 +38,7 @@ else
 @code {
     private WeatherForecast[] forecasts;
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }

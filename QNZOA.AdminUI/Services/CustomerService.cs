@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Blazored.SessionStorage;
 
 namespace QNZOA.AdminUI.Services
 {
@@ -14,10 +15,12 @@ namespace QNZOA.AdminUI.Services
     {
         private readonly SIGOAContext _db;
         private readonly IMapper _mapper;
-        public CustomerService(SIGOAContext db, IMapper mapper)
+        private ISessionStorageService _sessionStorageService;
+        public CustomerService(SIGOAContext db, IMapper mapper, ISessionStorageService sessionStorageService)
         {
             _db = db;
             _mapper = mapper;
+            _sessionStorageService = sessionStorageService;
         }
 
         public async Task<CustomerPagedVM> GetCustomersAsync(int page, int pageSize, string keywords)
@@ -40,6 +43,20 @@ namespace QNZOA.AdminUI.Services
                 .Skip(vm.PageIndex * vm.PageSize).Take(vm.PageSize).ProjectTo<CustomerVM>(_mapper.ConfigurationProvider).ToListAsync();
 
             return vm;
+        }
+
+        public IQueryable<Customer> GetCustomers()
+        {
+            return _db.Customers.OrderByDescending(d=>d.Id).AsQueryable();
+        }
+        public async System.Threading.Tasks.Task CreateCustomerAsync(CustomerIM item)
+        {
+            var customer = _mapper.Map<Customer>(item);
+            customer.CreatedDate = DateTime.Now;
+            customer.CreatedBy = await _sessionStorageService.GetItemAsync<string>("username");
+
+            await _db.AddAsync(customer);
+            await _db.SaveChangesAsync();
         }
     }
 }

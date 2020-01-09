@@ -19,17 +19,16 @@
             <div class="card-body">
                 <EditForm Model="@loginIM" OnValidSubmit="@HandleValidSubmit">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
+                    @*<ValidationSummary />*@
                     <div class="form-group">
                         <label for="Username">用户名</label>
                         <InputText id="Username" @bind-Value="loginIM.Username" class="form-control" />
-
+                        <ValidationMessage For="@(() => loginIM.Username)" />
                     </div>
                     <div class="form-group">
                         <label for="Password">密码</label>
-
                         <InputText type="password" id="Password" @bind-Value="loginIM.Password" class="form-control" />
-
+                        <ValidationMessage For="@(() => loginIM.Password)" />
                     </div>
                     <div class="form-group form-check">
                         <InputCheckbox @bind-Value="@loginIM.IsValidate" class="form-check-input" id="IsValidate" />
@@ -45,13 +44,13 @@
 </div>
 @code {
     private LoginIM loginIM = new LoginIM { IsValidate = false };
-    AuthenticationState AuthState;
+    //AuthenticationState AuthState;
 
-    private async Task HandleValidSubmit()
+    private async System.Threading.Tasks.Task HandleValidSubmit()
     {
         try
         {
-            ClaimsIdentity identity;
+
 
             var checkUser = await userService.GetUserByUsernameAsync(loginIM.Username);
 
@@ -63,7 +62,7 @@
 
                 if (checkUser.PasswordHash == pwdHash)
                 {
-                    await sessionStorage.SetItemAsync("username", loginIM.Username);                   
+                    await sessionStorage.SetItemAsync("username", loginIM.Username);
                     await sessionStorage.SetItemAsync("currentUser", checkUser);
 
                     ((QNZAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsAuthenticatedAsync(checkUser);
@@ -71,7 +70,7 @@
 
                     NavigationManager.NavigateTo("/");
                 }
-             
+
 
             }
 
@@ -79,7 +78,7 @@
 
 
 
-         
+
             // AuthState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
             //var result = await accountService.LoginAsync(loginIM);

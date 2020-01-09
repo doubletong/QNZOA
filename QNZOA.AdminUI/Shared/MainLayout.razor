@@ -46,7 +46,7 @@
 
     string username = string.Empty;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
     {
         //  var islogined = await sessionStorageService.GetItemAsync<bool>("isLogined");
         if (firstRender)   //第一次加载和并未登录成立，从session 里读取用户信息
@@ -63,7 +63,7 @@
 
     }
 
-    private async Task LoginOut()
+    private async System.Threading.Tasks.Task LoginOut()
     {
         //await localStorage.RemoveItemAsync("username");
         await sessionStorageService.RemoveItemAsync("username");
