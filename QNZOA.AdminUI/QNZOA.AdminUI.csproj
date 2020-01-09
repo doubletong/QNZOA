@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="Pages\Projects\Index.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +25,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Telerik.UI.for.Blazor" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Projects\" />
     <Folder Include="Pages\Users\" />
   </ItemGroup>
 
