@@ -31,4 +31,8 @@
     <ProjectReference Include="..\SIGOA.Infrastructure\SIGOA.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Users\" />
+  </ItemGroup>
+
 </Project>
