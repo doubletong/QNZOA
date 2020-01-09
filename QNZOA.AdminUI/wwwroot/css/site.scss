@@ -1,13 +1,13 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 a, .btn-link {
     color: #0366d6;
 }
 
-
+@import "pages/_info.scss";
 @import "pages/_layout.scss";
 @import "pages/_login.scss";

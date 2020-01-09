@@ -11,7 +11,6 @@ namespace QNZOA.AdminUI.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
-        private readonly IHttpClientFactory _httpClientFactory;
         public AccountService(HttpClient httpClient, ILocalStorageService localStorage/*, IHttpClientFactory httpClientFactory*/)
         {
             _httpClient = httpClient;

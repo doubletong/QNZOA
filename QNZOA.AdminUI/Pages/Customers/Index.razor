@@ -1,0 +1,86 @@
+﻿@page "/customers"
+@page "/customers/index"
+@inject ILocalStorageService localStorage
+@inject IHttpClientFactory clientFactory
+@inject ICustomerService customerService
+
+<div class="row mb-3 ">
+    <div class="col">
+        @*<div class="form-inline">
+                <input type="text" class="form-control mr-sm-2"  placeholder="关键字" />
+                <button type="button" class="btn btn-info" @onclick="SearchCustomers"><span class="iconfont icon-search"></span> 搜索</button>
+            </div>*@
+    </div>
+    <div class="col text-right">
+        <a href="/customers/edit" class="k-button k-primary"><span class="iconfont icon-plus"></span> 添加</a>
+    </div>
+</div>
+
+
+<TelerikGrid Data=@CustomerList Height=@Height
+             Pageable=true PageSize=@PageSize
+             @bind-Page="@CurrentPage">
+
+    <GridColumns>
+        <GridColumn Field=@nameof(Customer.Id) Editable="false" Width="70px" />
+        <GridColumn Field=@nameof(Customer.Name) Title="名称" />
+        <GridColumn Field="CustomerType" Title="类型">
+            <Template>
+                @((context as Customer).CustomerType == 1 ? "个人" : "企业")
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Customer.Phone) Title="电话" />
+        <GridColumn Field=@nameof(Customer.Email) Title="邮箱">
+            <Template>
+                <a href="mailto:@((context as Customer).Email)" target="_blank">@((context as Customer).Email)</a>
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Customer.Homepage) Title="主页">
+            <Template>
+                <a href="@((context as Customer).Homepage)" target="_blank">@((context as Customer).Homepage)</a>
+            </Template>
+        </GridColumn>
+        <GridColumn Field="CreatedDate" Title="创建日期">
+            <Template>
+                @((context as Customer).CreatedDate.ToString("d"))
+            </Template>
+        </GridColumn>
+        <GridColumn Field=@nameof(Customer.Id) Editable="false" Width="160px" Title="编辑">
+            <Template>
+                <a href="/customers/edit/@((context as Customer).Id)" class="k-button k-primary"><i class="k-icon k-i-edit"></i> 编辑</a>
+            </Template>
+        </GridColumn>
+        <GridCommandColumn>           
+            <GridCommandButton Command="Delete" Icon="delete">删除</GridCommandButton>         
+        </GridCommandColumn>
+    </GridColumns>
+</TelerikGrid>
+
+
+
+
+@code {
+    public IEnumerable<Customer> CustomerList { get; set; }
+    int PageSize = 10;
+    int CurrentPage = 1;
+    string Height = "500px";
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+
+        // base.OnAfterRender(firstRender);
+    }
+
+    protected override void OnInitialized()
+    {
+        CustomerList = customerService.GetCustomers();
+    }
+
+
+
+
+
+
+
+}

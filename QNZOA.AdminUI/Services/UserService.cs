@@ -17,7 +17,7 @@ namespace QNZOA.AdminUI.Services
 
         public User GetUserByUsername(string username)
         {
-            return _db.Users.FirstOrDefault(d => d.Username == username);
+            return _db.Users.AsNoTracking().FirstOrDefault(d => d.Username == username);
         }
         public async Task<User> GetUserByUsernameAsync(string username)
         {

@@ -1,0 +1,68 @@
+﻿@page "/customers/edit"
+@using QNZOA.AdminUI.Components
+@inject ICustomerService customerService
+@inject IToastService toastService
+    <EditForm Model="@CustomerIM" OnValidSubmit="@HandleValidSubmit">
+        <div class="card">
+            <h5 class="card-header">创建客户</h5>
+            <div class="card-body">
+
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label for="Username">名称</label>
+                    <InputText id="Username" @bind-Value="CustomerIM.Name" class="form-control" />
+
+                </div>
+                <div class="form-group">
+                    <label for="Username">类型</label>
+                    <InputSelectByte id="classification" @bind-Value="CustomerIM.CustomerType" class="form-control">
+                        <option value="0">请选择 ...</option>
+                        <option value="2">企业</option>
+                        <option value="1">个人</option>
+                    </InputSelectByte>
+                   
+                </div>
+               
+                <div class="form-group">
+                    <label for="phone">联系电话</label>
+                    <InputText id="phone" @bind-Value="CustomerIM.Phone" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="address">地址</label>
+                    <InputText id="address" @bind-Value="CustomerIM.Address" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <InputText id="email" @bind-Value="CustomerIM.Email" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="description">描述</label>
+                    <InputText id="description" @bind-Value="CustomerIM.Description" class="form-control" />
+                </div>
+
+            </div>
+            <div class="card-footer">   
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="/customers" class="btn btn-secondary">返回</a>
+            </div>
+        </div>
+    </EditForm>
+@code {
+    private CustomerIM CustomerIM = new CustomerIM();
+
+    private async System.Threading.Tasks.Task HandleValidSubmit()
+    {
+        try
+        {
+
+            await customerService.CreateCustomerAsync(CustomerIM);
+
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+
+        }
+    }
+}

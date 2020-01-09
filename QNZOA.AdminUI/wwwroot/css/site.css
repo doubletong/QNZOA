@@ -1,9 +1,13 @@
 ﻿@import url("open-iconic/font/css/open-iconic-bootstrap.min.css");
 html, body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  font-family: "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif; }
 
 a, .btn-link {
   color: #0366d6; }
+
+.validation-message {
+  font-size: 12px;
+  margin: .5rem 0; }
 
 app {
   position: relative;
