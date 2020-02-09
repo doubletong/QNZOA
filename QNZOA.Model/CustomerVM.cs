@@ -51,8 +51,17 @@ namespace QNZOA.Model
             {
                 if (PageSize > 0)
                 {
+                    var isInt = RowCount % PageSize;
                     var d = RowCount / PageSize;
-                    return (int)Math.Floor((double)d);
+                    if (isInt == 0)
+                    {
+                        return d - 1;
+                    }
+                    else
+                    {
+                        return (int)Math.Floor((double)d);
+                    }                  
+               
                 }
                 return 0;
             }

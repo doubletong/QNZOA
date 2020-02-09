@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@using System.Security.Claims;
 
 @inject ILocalStorageService localStorage
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorageService
@@ -8,7 +7,6 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
-<TelerikRootComponent>
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -37,7 +35,7 @@
         </div>
 
     </div>
-</TelerikRootComponent>
+
 <BlazoredToasts />
 
 

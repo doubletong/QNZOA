@@ -1,69 +1,109 @@
 ﻿@page "/customers"
 @page "/customers/index"
+
+
 @inject ILocalStorageService localStorage
 @inject IHttpClientFactory clientFactory
 @inject ICustomerService customerService
 
+
+
 <div class="row mb-3 ">
     <div class="col">
-        @*<div class="form-inline">
-                <input type="text" class="form-control mr-sm-2"  placeholder="关键字" />
-                <button type="button" class="btn btn-info" @onclick="SearchCustomers"><span class="iconfont icon-search"></span> 搜索</button>
-            </div>*@
+        <div class="form-inline">
+            <input type="text" class="form-control mr-sm-2" @bind="vm.Keywords"  placeholder="关键字" />
+            <button type="button" class="btn btn-info" @onclick="SearchCustomers"><span class="iconfont icon-search"></span> 搜索</button>
+        </div>
     </div>
-    <div class="col text-right">
-        <a href="/customers/edit" class="k-button k-primary"><span class="iconfont icon-plus"></span> 添加</a>
+    <div class="col-auto">
+        <a href="/customers/edit" class="btn btn-primary"><span class="iconfont icon-plus"></span> 添加</a>
     </div>
 </div>
 
 
-<TelerikGrid Data=@CustomerList Height=@Height
-             Pageable=true PageSize=@PageSize
-             @bind-Page="@CurrentPage">
 
-    <GridColumns>
-        <GridColumn Field=@nameof(Customer.Id) Editable="false" Width="70px" />
-        <GridColumn Field=@nameof(Customer.Name) Title="名称" />
-        <GridColumn Field="CustomerType" Title="类型">
-            <Template>
-                @((context as Customer).CustomerType == 1 ? "个人" : "企业")
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(Customer.Phone) Title="电话" />
-        <GridColumn Field=@nameof(Customer.Email) Title="邮箱">
-            <Template>
-                <a href="mailto:@((context as Customer).Email)" target="_blank">@((context as Customer).Email)</a>
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(Customer.Homepage) Title="主页">
-            <Template>
-                <a href="@((context as Customer).Homepage)" target="_blank">@((context as Customer).Homepage)</a>
-            </Template>
-        </GridColumn>
-        <GridColumn Field="CreatedDate" Title="创建日期">
-            <Template>
-                @((context as Customer).CreatedDate.ToString("d"))
-            </Template>
-        </GridColumn>
-        <GridColumn Field=@nameof(Customer.Id) Editable="false" Width="160px" Title="编辑">
-            <Template>
-                <a href="/customers/edit/@((context as Customer).Id)" class="k-button k-primary"><i class="k-icon k-i-edit"></i> 编辑</a>
-            </Template>
-        </GridColumn>
-        <GridCommandColumn>           
-            <GridCommandButton Command="Delete" Icon="delete">删除</GridCommandButton>         
-        </GridCommandColumn>
-    </GridColumns>
-</TelerikGrid>
+@if (vm.Customers == null)
+{
+    <div class="">加载中。。。</div>
+}
+else
+{
+    <table class='table table-striped table-bordered table-vmiddle'>
+        <thead>
+            <tr>
+                <th>Logo</th>
+                <th>名称</th>
+                <th>类型</th>
+                <th>联系电话</th>
+                <th>邮箱</th>
+                <th>主页</th>
+                <th>项目数量</th>
+                <th>创建时间</th>
+
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in vm.Customers)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Logo))
+                        {
+                            <img src="@item.Logo" style="height:30px;" />
+                        }
+
+                    </td>
+                    <td>@item.Name</td>
+                    <td>
+                        @{
+                            if (item.CustomerType == 1)
+                            {
+                                <span>个人</span>
+                            }
+                            else
+                            {
+                                <span>公司</span>
+                            }
+
+                        }
+                    </td>
+
+                    <td>@item.Phone</td>
+                    <td><a href="mailto:@item.Email">@item.Email</a></td>
+                    <td><a href="@item.Homepage" target="_blank">@item.Homepage</a></td>
+                    <td>@item.ProjectCount</td>
+                    <td>@string.Format("{0:d}", item.CreatedDate)</td>
+                    <td>
+                        @*<button type="button" data-toggle="modal" data-target="#exampleModal" title="编辑" onclick="@(async () => await EditItem(item.Id))" class='btn btn-primary btn-sm'>
+                                <span class="iconfont icon-edit"></span>
+                            </button>
+                            <button type="button" class='btn btn-danger btn-sm' @onclick="(async () => await DeleteItem(item.Id))" title="删除"><span class="iconfont icon-delete"></span></button>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col">
+            总记录数：@vm.RowCount 条，页：@(vm.PageIndex + 1) / @(vm.LastPageIndex+1)
+        </div>
+        <div class="col">
+
+            <Pagination PageSize="@vm.PageSize"
+                        PageIndex="@vm.PageIndex"
+                        LastPageIndex="@vm.LastPageIndex" ShowPageCount="6"
+                        PageChanged="@(async (e) => await PagerPageChanged(e))" />
+        </div>
+    </div>
+}
 
 
 
 
 @code {
-    public IEnumerable<Customer> CustomerList { get; set; }
-    int PageSize = 10;
-    int CurrentPage = 1;
-    string Height = "500px";
+    CustomerPagedVM vm = new CustomerPagedVM();
 
 
     protected override void OnAfterRender(bool firstRender)
@@ -72,15 +112,37 @@
         // base.OnAfterRender(firstRender);
     }
 
-    protected override void OnInitialized()
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        CustomerList = customerService.GetCustomers();
+        await RefreshData(1);
+        //   this.StateHasChanged();
     }
 
 
+    protected async System.Threading.Tasks.Task PagerPageChanged(int page)
+    {
+        await RefreshData(page);
+    }
+     //搜索
+    private async System.Threading.Tasks.Task SearchCustomers()
+    {
+         await RefreshData(1);
+    }
 
+     //绑定数据
+    async System.Threading.Tasks.Task RefreshData(int page)
+    {
+        try
+        {        
+            vm = await customerService.GetCustomersAsync(page, 10, vm.Keywords); //JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
+            this.StateHasChanged();
+        }
+        catch (AggregateException ex)
+        {
+         
+            throw new HttpRequestException(ex.InnerException.Message, ex.InnerException);
+        }
 
-
-
+    }
 
 }

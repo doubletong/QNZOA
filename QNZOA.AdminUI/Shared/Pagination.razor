@@ -26,15 +26,15 @@
 </nav>
 
 @code {
-    
+
     [Parameter]
     public   int PageSize { get; set; }
     [Parameter]
-     public   int ShowPageCount { get; set; }
+    public   int ShowPageCount { get; set; }
     [Parameter]
     public  int PageIndex { get; set; }
     [Parameter]
-     public   int LastPageIndex { get; set; }
+    public   int LastPageIndex { get; set; }
 
 
     [Parameter]
@@ -43,6 +43,7 @@
 
     public int StartIndex()
     {
+        
         var d = ShowPageCount / 2;
         var frontNum = (int)Math.Floor( (double)d);
 
