@@ -1,0 +1,14 @@
+﻿
+.page-login {
+    height:90vh;
+    position:relative;
+    .loginbox {
+        max-width: 360px;
+        margin: 0 auto;
+        position: relative;
+        top: 40%;
+        transform: translateY(-40%);
+        box-shadow:0 0 12px rgba(0,0,0,.15);
+
+    }
+}

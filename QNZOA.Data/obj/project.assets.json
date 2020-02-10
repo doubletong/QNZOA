@@ -666,18 +666,18 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\MyProjects\\QNZOA\\QNZOA\\QNZOA.Data\\QNZOA.Data.csproj",
+      "projectUniqueName": "D:\\MyProjects\\QNZOA\\QNZOA\\QNZOA.Data\\QNZOA.Data.csproj",
       "projectName": "QNZOA.Data",
-      "projectPath": "G:\\MyProjects\\QNZOA\\QNZOA\\QNZOA.Data\\QNZOA.Data.csproj",
+      "projectPath": "D:\\MyProjects\\QNZOA\\QNZOA\\QNZOA.Data\\QNZOA.Data.csproj",
       "packagesPath": "C:\\Users\\ytjan\\.nuget\\packages\\",
-      "outputPath": "G:\\MyProjects\\QNZOA\\QNZOA\\QNZOA.Data\\obj\\",
+      "outputPath": "D:\\MyProjects\\QNZOA\\QNZOA\\QNZOA.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "G:\\MyProjects\\QNZOA\\QNZOA\\NuGet.Config",
+        "D:\\MyProjects\\QNZOA\\QNZOA\\NuGet.Config",
         "C:\\Users\\ytjan\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
@@ -687,6 +687,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "D:\\Program Files (x86)\\Progress\\Telerik UI for Blazor 2.2.1\\packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

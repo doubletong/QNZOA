@@ -11,46 +11,51 @@
 @inject IUserService userService;
 
 @inject Microsoft.Extensions.Configuration.IConfiguration configuration
-<div class="page-login">
 
-    <div class="loginbox">
-        <div class="card">
-            <h5 class="card-header">用户登录</h5>
-            <div class="card-body">
-                <EditForm Model="@loginIM" OnValidSubmit="@HandleValidSubmit">
-                    <DataAnnotationsValidator />
-                    @*<ValidationSummary />*@
-                    <div class="form-group">
-                        <label for="Username">用户名</label>
-                        <InputText id="Username" @bind-Value="loginIM.Username" class="form-control" />
-                        <ValidationMessage For="@(() => loginIM.Username)" />
-                    </div>
-                    <div class="form-group">
-                        <label for="Password">密码</label>
-                        <InputText type="password" id="Password" @bind-Value="loginIM.Password" class="form-control" />
-                        <ValidationMessage For="@(() => loginIM.Password)" />
-                    </div>
-                    <div class="form-group form-check">
-                        <InputCheckbox @bind-Value="@loginIM.IsValidate" class="form-check-input" id="IsValidate" />
-                        <label class="form-check-label" for="IsValidate">记住我</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">登录</button>
-
-                </EditForm>
+   
+    <div class="page-login">
+        <header class="site-header">
+            <div class="container">
+                <div class="logo"><img src="img/logo.svg" alt=""></div>
             </div>
-        </div>
+        </header>
+        <div class="loginbox">
 
+            <header class="loginbox-header">用户登录</header>
+
+            <EditForm Model="@loginIM" OnValidSubmit="@HandleValidSubmit" class="loginForm">
+                <DataAnnotationsValidator />
+                @*<ValidationSummary />*@
+                <div class="mb-3">
+                    <label for="Username">用户名</label>
+                    <InputText id="Username" @bind-Value="loginIM.Username" class="form-control" />
+                    <ValidationMessage For="@(() => loginIM.Username)" />
+                </div>
+                <div class="mb-3">
+                    <label for="Password">密码</label>
+                    <InputText type="password" id="Password" @bind-Value="loginIM.Password" class="form-control" />
+                    <ValidationMessage For="@(() => loginIM.Password)" />
+                </div>
+                <div class="custom-control custom-checkbox mb-3">
+                    <InputCheckbox @bind-Value="@loginIM.IsValidate" class="custom-control-input" id="IsValidate" />
+                    <label class="custom-control-label" for="IsValidate">记住我</label>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">@((MarkupString)btnText)</button>
+
+            </EditForm>
+        </div>
+        <Footer />
     </div>
-</div>
 @code {
     private LoginIM loginIM = new LoginIM { IsValidate = false };
+    private string btnText = "登录系统";
     //AuthenticationState AuthState;
 
     private async System.Threading.Tasks.Task HandleValidSubmit()
     {
         try
         {
-
+            btnText = "<span class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>  登录中...";
 
             var checkUser = await userService.GetUserByUsernameAsync(loginIM.Username);
 
@@ -69,6 +74,12 @@
                     await sessionStorage.SetItemAsync("isLogined", true);  //标记正登录
 
                     NavigationManager.NavigateTo("/");
+                }
+                else
+                {
+                    toastService.ShowError("用户名或密码错误！","登录失败");
+
+                    btnText = "登录系统";
                 }
 
 

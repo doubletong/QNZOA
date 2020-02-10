@@ -36,6 +36,7 @@
   <ItemGroup>
     <Folder Include="Pages\Projects\" />
     <Folder Include="Pages\Users\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 </Project>
