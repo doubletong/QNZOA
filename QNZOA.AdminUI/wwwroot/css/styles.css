@@ -7250,6 +7250,24 @@ img {
   padding: 0;
   margin: 0; }
 
+.card .expand {
+  display: block; }
+
+.card .compress {
+  display: none; }
+
+.card.card-fixed {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9000;
+  width: 100%;
+  height: 100%; }
+  .card.card-fixed .expand {
+    display: none; }
+  .card.card-fixed .compress {
+    display: block; }
+
 .card.card-fixed {
   position: fixed;
   left: 0;
@@ -7337,9 +7355,9 @@ img {
     transition: all .2s; }
   .wrapper .rightcol {
     transition: all .2s; }
-  .wrapper.closenav .leftcol {
+  .wrapper.wrap-nonav .leftcol {
     margin-left: -220px; }
-  .wrapper.closenav .rightcol {
+  .wrapper.wrap-nonav .rightcol {
     margin-left: -220px; }
 
 .leftcol {

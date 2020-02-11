@@ -10,23 +10,26 @@
        }
    }
 }
-.wrapper{
+.wrapper {
     display: grid;
     grid-template-columns: 220px auto;
     min-height: 100%;
-  
-    .leftcol{
+
+    .leftcol {
         transition: all .2s;
     }
-    .rightcol{
+
+    .rightcol {
         transition: all .2s;
     }
-    &.closenav{     
-   
-        .leftcol{
+
+    &.wrap-nonav {
+
+        .leftcol {
             margin-left: -220px;
         }
-        .rightcol{
+
+        .rightcol {
             margin-left: -220px;
         }
     }

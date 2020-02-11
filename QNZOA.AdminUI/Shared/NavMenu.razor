@@ -1,42 +1,37 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">青鸟志</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@*<div class="top-row pl-4 navbar navbar-dark">
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>*@
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
+<div class="logo"><a href="index.html" title="青鸟志"><img src="img/logo.svg" alt="logo"></a></div>
+
+<nav id="menu">
+    <ul class="mainmenu" id="mainmenu">
+        <li class="liitem">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <i class="iconfont icon-home" aria-hidden="true"></i> Home
+                <i class="iconfont icon-dashboard" aria-hidden="true"></i> 控制面版
             </NavLink>
         </li>
-        <li class="nav-item px-3">
+      
+        <li class="liitem">
             <NavLink class="nav-link" href="counter">
                 <i class="iconfont icon-plus" aria-hidden="true"></i> Counter
             </NavLink>
         </li>
-        <li class="nav-item px-3">
+        <li class="liitem">
             <NavLink class="nav-link" href="fetchdata">
                 <i class="iconfont icon-list" aria-hidden="true"></i> Fetch data
             </NavLink>
         </li>
-        <li class="nav-item px-3">
+        <li class="liitem">
             <NavLink class="nav-link" href="customers">
-                <i class="iconfont icon-user" aria-hidden="true"></i> 客户
+                <i class="iconfont icon-customer" aria-hidden="true"></i> 客户
             </NavLink>
         </li>
     </ul>
-</div>
+    </nav>
 
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
+    @code {
+    
     }
-}

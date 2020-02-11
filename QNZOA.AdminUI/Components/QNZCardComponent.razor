@@ -1,0 +1,37 @@
+﻿@using System.Globalization
+
+    <div class="card @CardCssClass">
+        <header class="card-header">
+            <div class="row">
+                <div class="col">
+                    <div class="card-title-v1"><i class="iconfont @FontIcon"></i>@Title</div>
+                </div>
+                <div class="col-auto">
+                    <div class="control"><a class="expand" href="javascript:void(0);" @onclick="ToggleCard"><i class="iconfont icon-fullscreen"></i></a><a class="compress" href="javascript:void(0);" @onclick="ToggleCard"><i class="iconfont icon-shrink"></i></a></div>
+                </div>
+            </div>
+        </header>
+
+        @ChildContent
+    </div>
+
+@code {
+    private bool collapseCard = false;
+    private string CardCssClass => collapseCard ? "card-fixed" : null;
+
+    [Parameter]
+    public string Title { get; set; }
+    
+    [Parameter]
+    public string FontIcon { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private void ToggleCard()
+    {
+        collapseCard = !collapseCard;
+    }
+
+
+}
