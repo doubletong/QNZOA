@@ -7202,7 +7202,8 @@ a {
   text-decoration: none;
   color: #666; }
   a:hover {
-    text-decoration: none; }
+    text-decoration: none;
+    color: #d04b44; }
 
 .page {
   margin-bottom: 2rem; }
@@ -8272,6 +8273,9 @@ body {
   .page-customer td ul li .iconfont {
     color: #44c4d4;
     margin-right: .6rem; }
+
+.pagination {
+  margin-bottom: 0; }
 
 @media print {
   *:before, *:after {

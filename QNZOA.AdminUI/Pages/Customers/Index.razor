@@ -1,5 +1,5 @@
-﻿@page "/customers"
-@page "/customers/index"
+﻿@page "/Customers"
+@page "/Customers/Index"
 
 @using QNZOA.AdminUI.Components
 @inject ILocalStorageService localStorage
@@ -56,9 +56,7 @@
                                 <th>Logo</th>
                                 <th>名称</th>
                                 <th>类型</th>
-                                <th>联系电话</th>
-                                <th>邮箱</th>
-                                <th>主页</th>
+                                <th>联系电话/邮箱/主页</th>                                       
                                 <th>项目数量</th>
                                 <th>创建时间</th>
 
@@ -73,6 +71,10 @@
                                         @if (!string.IsNullOrEmpty(item.Logo))
                                         {
                                             <img src="@item.Logo" style="height:30px;" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://www.fillmurray.com/g/210/70" alt="">
                                         }
 
                                     </td>
@@ -91,16 +93,40 @@
                                         }
                                     </td>
 
-                                    <td>@item.Phone</td>
-                                    <td><a href="mailto:@item.Email">@item.Email</a></td>
-                                    <td><a href="@item.Homepage" target="_blank">@item.Homepage</a></td>
+                                    <td>
+                                        <ul>
+                                            @if (!string.IsNullOrEmpty(item.Phone))
+                                            {
+                                                <li><i class="iconfont icon-mobile"></i><a href="tel:@item.Phone">@item.Phone</a></li>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.Email))
+                                            {
+                                                <li><i class="iconfont icon-mail"></i><a href="mailto:@item.Email">@item.Email</a></li>
+                                            }
+                                            @if (!string.IsNullOrEmpty(item.Homepage))
+                                            {
+                                                <li><i class="iconfont icon-home"></i><a href="@item.Homepage" target="_blank">@item.Homepage</a></li>
+                                            }                                        
+                                        </ul>
+
+                                        
+                                    </td>
+                                  
                                     <td>@item.ProjectCount</td>
                                     <td>@string.Format("{0:d}", item.CreatedDate)</td>
                                     <td>
+                                        <a class="btn btn-info btn-sm" href="/Customers/@item.Id">
+                                            <i class="iconfont icon-ellipsis"></i>
+                                        </a>
+                                        @*<a class="btn btn-info btn-sm" href="/Customer/Detail" title="查看明细"><i class="iconfont icon-ellipsis"></i></a>*@
+                                        <a class="btn btn-info btn-sm" href="#" title="激活"><i class="iconfont icon-eye"></i></a>
+                                        <a class="btn btn-primary btn-sm" href="CustomerEdit.html" title="编辑"><i class="iconfont icon-edit"></i></a>
+                                        <a class="btn btn-info btn-sm" href="#" title="拷贝"><i class="iconfont icon-file-copy"></i></a>
+                                        <a class="btn btn-danger btn-sm" href="#" title="删除"><i class="iconfont icon-delete"></i></a>
                                         @*<button type="button" data-toggle="modal" data-target="#exampleModal" title="编辑" onclick="@(async () => await EditItem(item.Id))" class='btn btn-primary btn-sm'>
-                                                <span class="iconfont icon-edit"></span>
-                                            </button>
-                                            <button type="button" class='btn btn-danger btn-sm' @onclick="(async () => await DeleteItem(item.Id))" title="删除"><span class="iconfont icon-delete"></span></button>*@
+            <span class="iconfont icon-edit"></span>
+        </button>
+        <button type="button" class='btn btn-danger btn-sm' @onclick="(async () => await DeleteItem(item.Id))" title="删除"><span class="iconfont icon-delete"></span></button>*@
                                     </td>
                                 </tr>
                             }
@@ -111,17 +137,17 @@
             }
         </section>
         <footer class="card-footer">
-            <div class="row">
-                <div class="col">
-                    总记录数：@vm.RowCount 条，页：@(vm.PageIndex + 1) / @(vm.LastPageIndex + 1)
-                </div>
-                <div class="col">
-
+            <div class="row table-pager">
+                <div class="col-md">
                     <Pagination PageSize="@vm.PageSize"
                                 PageIndex="@vm.PageIndex"
                                 LastPageIndex="@vm.LastPageIndex" ShowPageCount="6"
                                 PageChanged="@(async (e) => await PagerPageChanged(e))" />
                 </div>
+                <div class="col-md-auto">
+                    总记录数：@vm.RowCount 条，页：@(vm.PageIndex + 1) / @(vm.LastPageIndex + 1)
+                </div>
+
             </div>
         </footer>
     </QNZCardComponent>
