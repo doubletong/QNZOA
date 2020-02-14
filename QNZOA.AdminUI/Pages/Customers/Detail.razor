@@ -1,6 +1,64 @@
 ﻿@page "/Customers/{Id:int}"
+@inject ICustomerService customerService
+
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item"><a href="/customers.html">客户管理</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@vm.Name</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+<div class="card page-customer">
+    <header class="card-header">
+        <div class="row">
+            <div class="col">
+                <div class="card-title-v1"><i class="iconfont icon-customer"></i>@($"{vm.Name}详情信息")</div>
+            </div>
+            <div class="col-auto">
+                <div class="control"><a class="expand" href="#"><i class="iconfont icon-fullscreen"></i></a><a class="compress" href="#" style="display: none;"><i class="iconfont icon-shrink"></i></a></div>
+            </div>
+        </div>
+    </header>
+    <section class="card-body">
+        <div class="jumbotron">
+            <div class="row">
+                <div class="col-md">
+                    <h1>@vm.Name<small>（@(vm.CustomerType==2?"公司":"个人"))</small></h1>
+                    <p class="lead">@vm.Description</p>
+                </div>
+                <div class="col-md-auto"><img src="@(string.IsNullOrEmpty(vm.Logo)?"https://www.fillmurray.com/g/210/70":vm.Logo)" alt="@vm.Name"></div>
+            </div>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item">电话：<a href="tel:@vm.Phone"><i class="iconfont icon-mobile"></i>@vm.Phone</a></li>
+            <li class="list-group-item">邮箱：<a href="mailto:@vm.Email"><i class="iconfont icon-mail"></i>@vm.Email</a></li>
+            <li class="list-group-item">主页：<a href="@vm.Homepage"><i class="iconfont icon-home"></i>@vm.Homepage</a></li>
+            <li class="list-group-item">创建时间：@vm.CreatedDate.ToShortDateString()</li>
+        </ul>
+    </section>
+    <div class="card-footer text-center">
+        <a href="/customers" class="btn btn-light"><i class="iconfont icon-arrowleft"></i> 返回</a>
+    </div>
+</div>
+
 
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    Customer vm = new Customer();
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        vm = await customerService.Get(Id);
+    }
 }

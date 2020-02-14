@@ -17,11 +17,13 @@
     <link href="_content/Blazored.Toast/blazored-toast.css" rel="stylesheet" />
     <link href="fonts/iconfont.css" rel="stylesheet" />
     <link href="~/css/styles.min.css" rel="stylesheet" />
+
+    <script src="~/plugins/tinymce/tinymce.min.js"></script>
 </head>
 <body>
-  
+
     <component type="typeof(App)" render-mode="ServerPrerendered" />
-   
+
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
@@ -35,5 +37,7 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script src="~/js/app.js"></script>
+
 </body>
 </html>

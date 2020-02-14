@@ -1,62 +1,129 @@
 ﻿@page "/customers/edit"
+@page "/customers/edit/{Id:int}"
+
+
 @using QNZOA.AdminUI.Components
 @inject ICustomerService customerService
 @inject IToastService toastService
-    <EditForm Model="@CustomerIM" OnValidSubmit="@HandleValidSubmit">
-        <div class="card">
-            <h5 class="card-header">创建客户</h5>
-            <div class="card-body">
+@inject AutoMapper.IMapper _mapper
+@inject NavigationManager navigationManager
 
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <div class="form-group">
-                    <label for="Username">名称</label>
-                    <InputText id="Username" @bind-Value="CustomerIM.Name" class="form-control" />
+@inject IJSRuntime JSRuntime;
 
-                </div>
-                <div class="form-group">
-                    <label for="Username">类型</label>
-                    <InputSelectByte id="classification" @bind-Value="CustomerIM.CustomerType" class="form-control">
-                        <option value="0">请选择 ...</option>
-                        <option value="2">企业</option>
-                        <option value="1">个人</option>
-                    </InputSelectByte>
-                   
-                </div>
-               
-                <div class="form-group">
-                    <label for="phone">联系电话</label>
-                    <InputText id="phone" @bind-Value="CustomerIM.Phone" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label for="address">地址</label>
-                    <InputText id="address" @bind-Value="CustomerIM.Address" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label for="email">邮箱</label>
-                    <InputText id="email" @bind-Value="CustomerIM.Email" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label for="description">描述</label>
-                    <InputText id="description" @bind-Value="CustomerIM.Description" class="form-control" />
-                </div>
-
-            </div>
-            <div class="card-footer">   
-                <button type="submit" class="btn btn-primary">保存</button>
-                <a href="/customers" class="btn btn-secondary">返回</a>
-            </div>
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item"><a href="/customers">客户管理</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">编辑客户信息</li>
+                </ol>
+            </nav>
         </div>
-    </EditForm>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+<EditForm Model="@CustomerIM" OnValidSubmit="@HandleValidSubmit">
+    <div class="card">
+        <header class="card-header">
+            <div class="row">
+                <div class="col">
+                    <div class="card-title-v1"><i class="iconfont icon-customer"></i>@(Id > 0 ? "编辑客户" : "创建客户")</div>
+                </div>
+                <div class="col-auto">
+                    <div class="control"><a class="expand" href="#"><i class="iconfont icon-fullscreen"></i></a><a class="compress" href="#" style="display: none;"><i class="iconfont icon-shrink"></i></a></div>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="form-group">
+                <label for="Username">名称</label>
+                <InputText id="Username" @bind-Value="CustomerIM.Name" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <label for="Username">类型</label>
+                <InputSelectByte id="classification" @bind-Value="CustomerIM.CustomerType" class="form-control">
+                    <option value="0">请选择 ...</option>
+                    <option value="2">企业</option>
+                    <option value="1">个人</option>
+                </InputSelectByte>
+
+            </div>
+
+            <div class="form-group">
+                <label for="phone">联系电话</label>
+                <InputText id="phone" @bind-Value="CustomerIM.Phone" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="address">地址</label>
+                <InputText id="address" @bind-Value="CustomerIM.Address" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="email">邮箱</label>
+                <InputText id="email" @bind-Value="CustomerIM.Email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="description">描述</label>
+                <InputTextArea id="description" @bind-Value="CustomerIM.Description" class="form-control" />
+            </div>
+
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-primary" type="submit"><i class="iconfont icon-save"></i>提交</button>
+            <a href="/customers" class="btn btn-secondary"><i class="iconfont icon-rollback"></i>返回</a>
+        </div>
+    </div>
+</EditForm>
 @code {
+    [Parameter]
+    public int? Id { get; set; }
     private CustomerIM CustomerIM = new CustomerIM();
+
+    protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+              await JSRuntime.InvokeVoidAsync("RichTextEditor.loadFullTinymce", "description");
+        }
+      
+        //base.OnAfterRender(firstRender);
+    }
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+
+
+        if (Id != null)
+        {
+            var customer = await customerService.Get(Id.Value);
+            CustomerIM = _mapper.Map<CustomerIM>(customer);
+        }
+
+    }
 
     private async System.Threading.Tasks.Task HandleValidSubmit()
     {
         try
         {
+            if (Id != null)
+            {
+                await customerService.UpdateCustomerAsync(Id.Value, CustomerIM);
+                toastService.ShowSuccess("客户资料已更新");
+            }
+            else
+            {
+                await customerService.CreateCustomerAsync(CustomerIM);
+                navigationManager.NavigateTo("/");
+            }
 
-            await customerService.CreateCustomerAsync(CustomerIM);
+
 
         }
         catch (Exception ex)

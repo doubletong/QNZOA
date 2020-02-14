@@ -37,6 +37,7 @@
     <Folder Include="Pages\Projects\" />
     <Folder Include="Pages\Users\" />
     <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\plugins\" />
   </ItemGroup>
 
 </Project>

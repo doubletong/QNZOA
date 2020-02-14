@@ -45,6 +45,11 @@ namespace QNZOA.AdminUI.Services
             return vm;
         }
 
+        public async Task<Customer> Get(int id)
+        {
+            return await _db.Customers.FindAsync(id);
+        }
+
         public IQueryable<Customer> GetCustomers()
         {
             return _db.Customers.OrderByDescending(d=>d.Id).AsQueryable();
@@ -56,6 +61,18 @@ namespace QNZOA.AdminUI.Services
             customer.CreatedBy = await _sessionStorageService.GetItemAsync<string>("username");
 
             await _db.AddAsync(customer);
+            await _db.SaveChangesAsync();
+        }
+
+        public async System.Threading.Tasks.Task UpdateCustomerAsync(int id, CustomerIM item)
+        {
+            var origin = await _db.Customers.FindAsync(id);
+            var customer = _mapper.Map(item,origin);
+
+            //customer.CreatedDate = DateTime.Now;
+            //customer.CreatedBy = await _sessionStorageService.GetItemAsync<string>("username");
+
+            _db.Update(customer);
             await _db.SaveChangesAsync();
         }
     }
