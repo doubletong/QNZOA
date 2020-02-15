@@ -106,13 +106,13 @@
 
     protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
     {
+        
         if (firstRender)
         {
-            // await JSRuntime.InvokeVoidAsync("RichTextEditor.loadFullTinymce", "description");
+            await JSRuntime.InvokeVoidAsync("RichTextEditor.removeTinymce");
+            await JSRuntime.InvokeVoidAsync("RichTextEditor.loadFullTinymce", "description");
             await JSRuntime.InvokeVoidAsync("App.holder", "imgLogo");
-
-
-
+                       
         }
 
         //base.OnAfterRender(firstRender);

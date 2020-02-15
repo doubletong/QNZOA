@@ -1,14 +1,21 @@
 ﻿
 var RichTextEditor = {
-    
+    removeTinymce: function () {
+        tinymce.remove();
+    },
     loadTinymce: function (mytextarea) {
         tinymce.init({
             selector: '#' + mytextarea
         });
     },
     loadFullTinymce: function (mytextarea) {
+      
+
         tinymce.init({
             selector: '#' + mytextarea,
+            //picture manager
+            file_picker_callback: QNZ.FilePickerCallback,   //from plugin FileManager.js
+            images_upload_handler: QNZ.ImagesUploadHandler,
             plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
             imagetools_cors_hosts: ['picsum.photos'],
             menubar: 'file edit view insert format tools table help',
@@ -38,22 +45,7 @@ var RichTextEditor = {
             ],
             importcss_append: true,
             height: 400,
-            file_picker_callback: function (callback, value, meta) {
-                /* Provide file and text for the link dialog */
-                if (meta.filetype === 'file') {
-                    callback('https://www.google.com/logos/google.jpg', { text: 'My text' });
-                }
-
-                /* Provide image and alt text for the image dialog */
-                if (meta.filetype === 'image') {
-                    callback('https://www.google.com/logos/google.jpg', { alt: 'My alt text' });
-                }
-
-                /* Provide alternative source and posted for the media dialog */
-                if (meta.filetype === 'media') {
-                    callback('movie.mp4', { source2: 'alt.ogg', poster: 'https://www.google.com/logos/google.jpg' });
-                }
-            },
+        
             templates: [
                 { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
                 { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },

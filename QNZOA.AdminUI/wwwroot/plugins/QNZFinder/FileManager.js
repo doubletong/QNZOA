@@ -674,10 +674,10 @@ var QNZ = {
         // if (meta.filetype == 'media') {
         //   callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
         // }
-        var finderUrl = '/QNZFinder/FinderForTinyMce';
+        var finderUrl = '/QNZFinder/ForTinymce';
         tinyMCE.activeEditor.windowManager.openUrl({
             url: finderUrl,
-            title: 'QNZFinder 1.0 文件管理',
+            title: 'QNZFinder 文件管理',
             width: 1140,
             height: 700
             // onMessage: function (api, data) {
@@ -692,6 +692,35 @@ var QNZ = {
             var data = event.data;
             callback(data.content);
         });
+
+    },
+
+    ForTinymcePageInit: function () {
+
+        function selectImage(fileUrl) {
+            //  console.log(fileUrl);
+
+            window.parent.postMessage({
+                mceAction: 'FileSelected',
+                content: fileUrl
+            }, '*');
+
+            parent.tinymce.activeEditor.windowManager.close();
+        }
+
+
+        $("body").delegate("#fileList .itembox .item", "dblclick", function (e) {
+            e.preventDefault();
+            var fileUrl = $(this).attr("data-file");
+            selectImage(fileUrl);
+
+        });
+
+
+        $("#selectImage").on("click", function () {
+            var fileUrl = $("#fileList .item.active").attr("data-file");
+            selectImage(fileUrl);
+        })
 
     },
 
