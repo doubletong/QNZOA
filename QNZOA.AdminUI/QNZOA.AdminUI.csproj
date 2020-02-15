@@ -23,7 +23,7 @@
     <PackageReference Include="Cloudcrate.AspNetCore.Blazor.Browser.Storage" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
@@ -37,7 +37,11 @@
     <Folder Include="Pages\Projects\" />
     <Folder Include="Pages\Users\" />
     <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\js\vendor\" />
     <Folder Include="wwwroot\plugins\" />
+    <Folder Include="wwwroot\Uploads\Images\" />
+    <Folder Include="wwwroot\Uploads\Files\" />
+    <Folder Include="wwwroot\ThumbTemp\" />
   </ItemGroup>
 
 </Project>

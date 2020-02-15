@@ -5,6 +5,10 @@
     {
       "library": "tinymce@5.2.0",
       "destination": "wwwroot/plugins/tinymce"
+    },
+    {
+      "library": "jquery@3.4.1",
+      "destination": "wwwroot/js/vendor/jquery"
     }
   ]
 }

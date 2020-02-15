@@ -71,3 +71,127 @@ var RichTextEditor = {
     }
 
 };
+
+
+
+//var QNZ = {
+//    ImagesUploadHandler: function (blobInfo, success, failure) {
+//        var xhr, formData;
+
+//        xhr = new XMLHttpRequest();
+//        xhr.withCredentials = false;
+//        xhr.open('POST', '/api/QNZFinder/ImageUpload');
+
+//        xhr.onload = function () {
+//            var json;
+
+//            if (xhr.status != 200) {
+//                failure('HTTP Error: ' + xhr.status);
+//                return;
+//            }
+
+//            json = JSON.parse(xhr.responseText);
+
+//            if (!json || typeof json.location != 'string') {
+//                failure('Invalid JSON: ' + xhr.responseText);
+//                return;
+//            }
+
+//            success(json.location);
+//        };
+
+
+//        var description = '';
+
+//        jQuery(tinymce.activeEditor.dom.getRoot()).find('img').not('.loaded-before').each(
+//            function () {
+//                description = $(this).attr("alt");
+//                $(this).addClass('loaded-before');
+//            });
+
+//        formData = new FormData();
+//        formData.append('file', blobInfo.blob(), blobInfo.filename());
+//        formData.append('description', description); //found now))
+
+//        xhr.send(formData);
+//    },
+
+
+//    percent: 70,
+//    baseUrl: "/QNZFinder/SingleFinder",
+//    selectActionFunction: null,
+//    elFinderCallback: function (fileUrl) {
+//        this.selectActionFunction(fileUrl);
+//    },
+//    open: function () {
+//        var w = 1140,
+//            h = 600; // default sizes
+//        if (window.screen) {
+//            w = window.screen.width * this.percent / 100;
+//            h = window.screen.height * this.percent / 100;
+//        }
+//        var x = screen.width / 2 - w / 2;
+//        var y = screen.height / 2 - h / 2;
+
+//        window.open(this.baseUrl, "_blank", 'height=' + h + ',width=' + w + ',left=' + x + ',top=' + y);
+//    },
+
+//    FilePickerCallback2: function (callback, value, meta) {
+//        // Provide file and text for the link dialog
+//        // if (meta.filetype == 'file') {
+//        //   callback('mypage.html', {text: 'My text'});
+//        // }
+
+//        // // Provide image and alt text for the image dialog
+//        //if (meta.filetype == 'image') {
+
+//        //   callback('myimage.jpg', {alt: 'My alt text'});
+//        // }
+
+//        // // Provide alternative source and posted for the media dialog
+//        // if (meta.filetype == 'media') {
+//        //   callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
+//        // }
+//        var finderUrl = '/QNZFinder/FinderForTinyMce';
+//        tinyMCE.activeEditor.windowManager.openUrl({
+//            url: finderUrl,
+//            title: 'QNZFinder 1.0 文件管理',
+//            width: 1140,
+//            height: 700
+//            // onMessage: function (api, data) {
+//            //     if (data.mceAction === 'FileSelected') {
+//            //        callback(data.url);
+//            //        api.close();
+//            //    }
+//            //}
+//        });
+
+//        window.addEventListener('message', function (event) {
+//            var data = event.data;
+//            callback(data.content);
+//        });
+
+//    },
+
+//    InitDropzone: function () {
+//        Dropzone.options.dropzoneForm = {
+//            paramName: "file",
+//            maxFilesize: 20,
+//            maxFiles: 5,
+//            acceptedFiles: "image/*,application/pdf",
+//            dictMaxFilesExceeded: "Custom max files msg",
+//            dictDefaultMessage: "拖拽文件到这里上传",
+//            queuecomplete: function (files) {
+//                this.removeAllFiles();
+//                console.log("queuecomplete");
+//                document.getElementById("uploadbox").style.display = "none";
+
+//                var filePath = document.getElementById("filePath");
+//                var dir = filePath.innerText; //$(this).attr("data-dir"),
+//                var url = "/qnzfinder/GetSubFiles?dir=" + dir;
+//                SIG.getInstance().getFiles(url);
+//            }
+//        };
+//    }
+
+//};
