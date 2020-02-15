@@ -349,114 +349,6 @@ var QNZCM = {
 }
 
 
-////page js
-//function closeUploader() {
-//    $("#thelist").html("");
-//    $("#picker").text("选择文件")
-//    $("#uploadFile").removeClass("show").animate({ top: "-100px" }, 600);
-//}
-
-////上传文件
-//function uploadFiles(inputId) {
-//    var filePath = $("#dirTree a.active").attr("data-path");
-//    var serverUrl = filePath !== undefined ? filePath : "";
-
-
-//    var input = document.getElementById(inputId);
-//    var files = input.files;
-//    var formData = new FormData();
-
-//    for (var i = 0; i != files.length; i++) {
-//        formData.append("files", files[i]);
-//    }
-
-//    formData.append("filePath", serverUrl);
-//    //debugger;
-//    $.ajax(
-//        {
-//            url: "/Admin/QNZFinder/UploadFiles",
-//            data: formData,
-//            processData: false,
-//            contentType: false,
-//            type: "POST",
-//            xhr: function () {
-//                var xhr = new window.XMLHttpRequest();
-//                xhr.upload.addEventListener("progress",
-//                    function (evt) {
-//                        if (evt.lengthComputable) {
-//                            var progress = Math.round((evt.loaded / evt.total) * 100);
-
-//                            console.log(progress);
-//                        }
-//                    },
-//                    false);
-//                return xhr;
-//            },
-//            success: function (data) {
-//               // alert("Files Uploaded!");
-
-//                closeUploader();
-
-//                if (filePath !== undefined) {
-//                    var url = "/api/QNZFinder/GetSubFiles?dir=" + filePath;
-
-//                    QNZ.getFiles(url);
-//                    // $("#btnRefresh").attr("data-dir", dir);
-//                } else {
-//                    //载入初始目录
-//                    QNZ.Initialize();
-//                }
-//            }
-//        }
-//    );
-//}
-
-
-
-
-
-
-//var SIGFinder = {   
-
-//    FilePickerCallback: function(callback, value, meta) {
-//        tinymce.activeEditor.windowManager.open({
-//            file: '/Admin/QNZFinder/FinderForTinyMce',// use an absolute path!
-//            title: 'QNZFinder 1.0',
-//            width: 900,
-//            height: 450,
-//            resizable: 'yes'
-//        }, {
-//                oninsert: function (file, fm) {
-//                    var url, reg, info;
-
-//                    // URL normalization
-//                    // url = fm.convAbsUrl(file.url);
-//                    url = "/" + file.path;
-//                    // Make file info
-//                    info = file.name + ' (' + fm.formatSize(file.size) + ')';
-
-//                    // Provide file and text for the link dialog
-//                    if (meta.filetype == 'file') {
-//                        callback(url, { text: info, title: info });
-//                    }
-
-//                    // Provide image and alt text for the image dialog
-//                    if (meta.filetype == 'image') {
-//                        callback(url, { alt: info });
-//                    }
-
-//                    // Provide alternative source and posted for the media dialog
-//                    if (meta.filetype == 'media') {
-//                        callback(url);
-//                    }
-//                }
-//            });
-//            return false;
-//        },
-
-
-//};
-
 
 var QNZ = {
 
@@ -722,9 +614,9 @@ var QNZ = {
 
 
     percent: 70,
-    baseUrl: "/QNZFinder/SingleFinder",
+    baseUrl: "/QNZFinder/Single",
     selectActionFunction: null,
-    elFinderCallback: function (fileUrl) {
+    SingleFinderCallback: function (fileUrl) {
         this.selectActionFunction(fileUrl);
     },
     open: function () {
@@ -738,6 +630,32 @@ var QNZ = {
         var y = screen.height / 2 - h / 2;
 
         window.open(this.baseUrl, "_blank", 'height=' + h + ',width=' + w + ',left=' + x + ',top=' + y);
+    },
+
+    // 单独调用初始化脚本
+    SingleCallPageInit: function () {
+
+        function selectImage(fileUrl) {
+            //  console.log(fileUrl);
+            window.opener.QNZ.SingleFinderCallback(fileUrl);
+            window.close();
+        }
+
+     
+
+            $("body").delegate("#fileList .itembox .item", "dblclick", function (e) {
+                e.preventDefault();
+                var fileUrl = $(this).attr("data-file");
+                selectImage(fileUrl);
+
+            });
+
+
+            $("#selectImage").on("click", function () {
+                var fileUrl = $("#fileList .item.active").attr("data-file");
+                selectImage(fileUrl);
+            })
+       
     },
 
     FilePickerCallback: function (callback, value, meta) {

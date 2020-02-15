@@ -82,6 +82,7 @@ namespace QNZOA.Model
         public string Phone { get; set; }
         [Url]
         public string Homepage { get; set; }
+        [StringLength(150)]
         public string Logo { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }

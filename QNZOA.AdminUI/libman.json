@@ -6,9 +6,15 @@
       "library": "tinymce@5.2.0",
       "destination": "wwwroot/plugins/tinymce"
     },
+
     {
       "library": "jquery@3.4.1",
       "destination": "wwwroot/js/vendor/jquery"
-    }
+    },
+    {
+      "library": "holder@2.9.6",
+      "destination": "wwwroot/plugins/holder"
+    }    
+
   ]
 }

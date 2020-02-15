@@ -1,0 +1,28 @@
+﻿@page "/QNZFinder/Single"
+
+@layout LayoutNoLeft
+
+@inject IJSRuntime JSRuntime;
+@using QNZOA.AdminUI.Components
+
+<QNZFinderComponent />
+
+
+<footer class="text-right tinymce-footer">
+    <small>注：双击选取文件</small>
+</footer>
+
+@code {
+    protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+     
+            await JSRuntime.InvokeVoidAsync("QNZ.SingleCallPageInit");
+
+        }
+
+        //base.OnAfterRender(firstRender);
+    }
+}
+
