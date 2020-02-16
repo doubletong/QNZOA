@@ -92,6 +92,7 @@
         private async System.Threading.Tasks.Task LoginOut()
         {
             //await localStorage.RemoveItemAsync("username");
+            await sessionStorageService.RemoveItemAsync("currentUser");
             await sessionStorageService.RemoveItemAsync("username");
             await sessionStorageService.RemoveItemAsync("passwordHash");
             ((QNZAuthenticationStateProvider)AuthenticationStateProvider).IsAuthenticated = false;

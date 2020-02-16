@@ -7282,6 +7282,11 @@ img {
   font-size: 1.125rem;
   color: #d04b44; }
 
+.table th {
+  font-weight: normal;
+  color: #333;
+  background-color: #f7f7f7; }
+
 .table td {
   vertical-align: middle; }
   .table td .btn {

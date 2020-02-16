@@ -18,7 +18,7 @@ namespace QNZOA.Data
         [InverseProperty("TaskBadges")]
         public virtual Badge Badge { get; set; }
         [ForeignKey(nameof(TaskId))]
-        [InverseProperty("TaskBadges")]
-        public virtual Task Task { get; set; }
+        [InverseProperty(nameof(TaskList.TaskBadges))]
+        public virtual TaskList Task { get; set; }
     }
 }

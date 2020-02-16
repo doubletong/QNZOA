@@ -23,13 +23,16 @@ namespace QNZOA.AdminUI.Services
             _sessionStorageService = sessionStorageService;
         }
 
-        public async Task<CustomerPagedVM> GetCustomersAsync(int page, int pageSize, string keywords)
+        public async Task<CustomerPagedVM> GetCustomersAsync(int page, int pageSize,  string keywords,string orderBy,string orderMode,int customerType= 0)
         {
             var vm = new CustomerPagedVM
             {
                 PageIndex = page - 1,
                 PageSize = pageSize,
-                Keywords = keywords
+                Keywords = keywords,
+                OrderBy = orderBy,
+                OrderMode = orderMode,
+                CustomerType = customerType
             };
 
             var query = _db.Customers.AsNoTracking().Include(d => d.Projects).AsQueryable();
@@ -37,10 +40,49 @@ namespace QNZOA.AdminUI.Services
             {
                 query = query.Where(d => d.Name.Contains(keywords) || d.Description.Contains(keywords) || d.Phone.Contains(keywords));
             }
+            if (customerType > 0)
+            {
+                query = query.Where(d => d.CustomerType == customerType);
+            }
+
+            if (!string.IsNullOrEmpty(orderBy))
+            {
+                switch (orderBy)
+                {
+                    case "name":
+                        if (orderMode == "desc")
+                        {
+                            query = query.OrderByDescending(d => d.Name);
+                        }                            
+                        else
+                        {
+                            query = query.OrderBy(d => d.Name);
+                        }
+                        break;
+                    case "createdDate":
+                        if (orderMode == "desc")
+                        {
+                            query = query.OrderByDescending(d => d.CreatedDate);
+                        }
+                        else
+                        {
+                            query = query.OrderBy(d => d.CreatedDate);
+                        }
+                        break;
+                    default:
+                        query = query.OrderByDescending(d => d.CreatedDate);
+                        break;
+                }
+            }
+            else
+            {
+                query = query.OrderByDescending(d => d.CreatedDate);
+            }
+
+           
 
             vm.RowCount = await query.CountAsync();
-            vm.Customers = await query.OrderByDescending(d => d.CreatedDate)
-                .Skip(vm.PageIndex * vm.PageSize).Take(vm.PageSize).ProjectTo<CustomerVM>(_mapper.ConfigurationProvider).ToListAsync();
+            vm.Customers = await query.Skip(vm.PageIndex * vm.PageSize).Take(vm.PageSize).ProjectTo<CustomerVM>(_mapper.ConfigurationProvider).ToListAsync();
 
             return vm;
         }
@@ -54,7 +96,7 @@ namespace QNZOA.AdminUI.Services
         {
             return _db.Customers.OrderByDescending(d=>d.Id).AsQueryable();
         }
-        public async System.Threading.Tasks.Task CreateCustomerAsync(CustomerIM item)
+        public async Task CreateCustomerAsync(CustomerIM item)
         {
             var customer = _mapper.Map<Customer>(item);
             customer.CreatedDate = DateTime.Now;
@@ -64,7 +106,7 @@ namespace QNZOA.AdminUI.Services
             await _db.SaveChangesAsync();
         }
 
-        public async System.Threading.Tasks.Task UpdateCustomerAsync(int id, CustomerIM item)
+        public async Task UpdateCustomerAsync(int id, CustomerIM item)
         {
             var origin = await _db.Customers.FindAsync(id);
             var customer = _mapper.Map(item,origin);
@@ -74,6 +116,22 @@ namespace QNZOA.AdminUI.Services
 
             _db.Update(customer);
             await _db.SaveChangesAsync();
+        }
+
+        public async Task Delete(int id)
+        {
+            if(await _db.Projects.AnyAsync(d=>d.CustomerId == id))
+            {
+                throw new Exception("此客户还关联着项目，不能直接删除！");         
+            }
+            else
+            {
+                var c = await _db.Customers.FindAsync(id);
+                _db.Customers.Remove(c);
+                await _db.SaveChangesAsync();
+            }
+
+           
         }
     }
 }

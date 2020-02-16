@@ -12,7 +12,7 @@ namespace QNZOA.Data
         public User()
         {
             Projects = new HashSet<Project>();
-            Tasks = new HashSet<Task>();
+            TaskLists = new HashSet<TaskList>();
             UserProjects = new HashSet<UserProject>();
             UserRoles = new HashSet<UserRole>();
         }
@@ -44,8 +44,8 @@ namespace QNZOA.Data
 
         [InverseProperty(nameof(Project.ManagerNavigation))]
         public virtual ICollection<Project> Projects { get; set; }
-        [InverseProperty(nameof(Task.PerformerNavigation))]
-        public virtual ICollection<Task> Tasks { get; set; }
+        [InverseProperty(nameof(TaskList.PerformerNavigation))]
+        public virtual ICollection<TaskList> TaskLists { get; set; }
         [InverseProperty(nameof(UserProject.User))]
         public virtual ICollection<UserProject> UserProjects { get; set; }
         [InverseProperty(nameof(UserRole.User))]

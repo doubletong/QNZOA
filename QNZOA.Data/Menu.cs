@@ -17,15 +17,19 @@ namespace QNZOA.Data
 
         [Key]
         public int Id { get; set; }
+        [StringLength(50)]
         public string Action { get; set; }
         public bool Active { get; set; }
+        [StringLength(50)]
         public string Area { get; set; }
         public int CategoryId { get; set; }
+        [StringLength(50)]
         public string Controller { get; set; }
         [StringLength(50)]
         public string CreatedBy { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
+        [StringLength(50)]
         public string Iconfont { get; set; }
         public int Importance { get; set; }
         public bool IsExpand { get; set; }
@@ -38,6 +42,7 @@ namespace QNZOA.Data
         [StringLength(50)]
         public string UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        [StringLength(150)]
         public string Url { get; set; }
 
         [ForeignKey(nameof(CategoryId))]

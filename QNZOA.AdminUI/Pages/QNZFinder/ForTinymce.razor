@@ -5,6 +5,9 @@
 @inject IJSRuntime JSRuntime;
 @using QNZOA.AdminUI.Components
 
+@attribute [Authorize]
+
+
 <QNZFinderComponent />
 
 
@@ -20,9 +23,9 @@
 
             await JSRuntime.InvokeVoidAsync("QNZ.ForTinymcePageInit");
 
-         }
+        }
 
-            //base.OnAfterRender(firstRender);
+        //base.OnAfterRender(firstRender);
     }
 }
 

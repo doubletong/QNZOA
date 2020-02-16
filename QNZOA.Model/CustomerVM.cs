@@ -43,6 +43,9 @@ namespace QNZOA.Model
         public int PageSize { get; set; }
         public int RowCount { get; set; }
         public string Keywords { get; set; }
+        public int CustomerType { get; set; }
+        public string OrderBy { get; set; }
+        public string OrderMode { get; set; }
         public IList<CustomerVM> Customers { get; set; }
 
         public int LastPageIndex

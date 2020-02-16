@@ -12,7 +12,7 @@ namespace QNZOA.Data
         public Project()
         {
             Paymentlogs = new HashSet<Paymentlog>();
-            Tasks = new HashSet<Task>();
+            TaskLists = new HashSet<TaskList>();
             UserProjects = new HashSet<UserProject>();
         }
 
@@ -48,8 +48,8 @@ namespace QNZOA.Data
         public virtual ProjectBusiness ProjectBusiness { get; set; }
         [InverseProperty(nameof(Paymentlog.Project))]
         public virtual ICollection<Paymentlog> Paymentlogs { get; set; }
-        [InverseProperty(nameof(Task.Project))]
-        public virtual ICollection<Task> Tasks { get; set; }
+        [InverseProperty(nameof(TaskList.Project))]
+        public virtual ICollection<TaskList> TaskLists { get; set; }
         [InverseProperty(nameof(UserProject.Project))]
         public virtual ICollection<UserProject> UserProjects { get; set; }
     }

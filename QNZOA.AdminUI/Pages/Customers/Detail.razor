@@ -1,5 +1,6 @@
 ﻿@page "/Customers/{Id:int}"
 @inject ICustomerService customerService
+@attribute [Authorize]
 
 <div class="breadcrumb-container">
     <div class="row">
@@ -32,7 +33,7 @@
         <div class="jumbotron">
             <div class="row">
                 <div class="col-md">
-                    <h1>@vm.Name<small>（@(vm.CustomerType==2?"公司":"个人"))</small></h1>
+                    <h1>@vm.Name<small>（@(vm.CustomerType == 2 ? "公司" : "个人"))</small></h1>
                     <p class="lead">@vm.Description</p>
                 </div>
                 <div class="col-md-auto"><img src="@(string.IsNullOrEmpty(vm.Logo)?"https://www.fillmurray.com/g/210/70":vm.Logo)" alt="@vm.Name"></div>

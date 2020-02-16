@@ -1,7 +1,10 @@
 ﻿@page "/Customers"
 @page "/Customers/Index"
+@attribute [Authorize]
 
 @using QNZOA.AdminUI.Components
+
+@inject IToastService toastService
 @inject ILocalStorageService localStorage
 @inject IHttpClientFactory clientFactory
 @inject ICustomerService customerService
@@ -30,6 +33,11 @@
                     <div class="col">
                         <div class="form-inline">
                             <input type="text" class="form-control mr-sm-2" @bind="vm.Keywords" placeholder="关键字" />
+                            <select id="classification" @bind="vm.CustomerType" class="form-control mr-sm-2">
+                                <option value="0">请选择 ...</option>
+                                <option value="2">企业</option>
+                                <option value="1">个人</option>
+                            </select>
                             <button type="button" class="btn btn-info" @onclick="SearchCustomers"><span class="iconfont icon-search"></span> 搜索</button>
                         </div>
                     </div>
@@ -54,11 +62,15 @@
                         <thead>
                             <tr>
                                 <th>Logo</th>
-                                <th>名称</th>
+                                <th>  
+                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="name" HeaderText="名称" OnClick="OrderCustomers" />
+                                </th>
                                 <th>类型</th>
-                                <th>联系电话/邮箱/主页</th>                                       
+                                <th>联系电话/邮箱/主页</th>
                                 <th>项目数量</th>
-                                <th>创建时间</th>
+                                <th>
+                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="createdDate" HeaderText="创建时间" OnClick="OrderCustomers" />                                    
+                                </th>
 
                                 <th>操作</th>
                             </tr>
@@ -106,26 +118,21 @@
                                             @if (!string.IsNullOrEmpty(item.Homepage))
                                             {
                                                 <li><i class="iconfont icon-home"></i><a href="@item.Homepage" target="_blank">@item.Homepage</a></li>
-                                            }                                        
+                                            }
                                         </ul>
 
-                                        
+
                                     </td>
-                                  
+
                                     <td>@item.ProjectCount</td>
                                     <td>@string.Format("{0:d}", item.CreatedDate)</td>
                                     <td>
                                         <a class="btn btn-info btn-sm" href="/Customers/@item.Id">
                                             <i class="iconfont icon-ellipsis"></i>
-                                        </a>                                   
-                                        <a class="btn btn-info btn-sm" href="#" title="激活"><i class="iconfont icon-eye"></i></a>
+                                        </a>
                                         <a class="btn btn-primary btn-sm" href="/Customers/Edit/@item.Id" title="编辑"><i class="iconfont icon-edit"></i></a>
-                                        <a class="btn btn-info btn-sm" href="#" title="拷贝"><i class="iconfont icon-file-copy"></i></a>
-                                        <a class="btn btn-danger btn-sm" href="#" title="删除"><i class="iconfont icon-delete"></i></a>
-                                        @*<button type="button" data-toggle="modal" data-target="#exampleModal" title="编辑" onclick="@(async () => await EditItem(item.Id))" class='btn btn-primary btn-sm'>
-            <span class="iconfont icon-edit"></span>
-        </button>
-        <button type="button" class='btn btn-danger btn-sm' @onclick="(async () => await DeleteItem(item.Id))" title="删除"><span class="iconfont icon-delete"></span></button>*@
+                                        <button class="btn btn-danger btn-sm" type="button" @onclick="(async () => await DeleteItem(item.Id))" title="删除"><i class="iconfont icon-delete"></i></button>
+
                                     </td>
                                 </tr>
                             }
@@ -166,35 +173,59 @@
         // base.OnAfterRender(firstRender);
     }
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         await RefreshData(1);
         //   this.StateHasChanged();
     }
 
 
-    protected async System.Threading.Tasks.Task PagerPageChanged(int page)
+    protected async Task PagerPageChanged(int page)
     {
         await RefreshData(page);
     }
     //搜索
-    private async System.Threading.Tasks.Task SearchCustomers()
+    private async Task SearchCustomers()
     {
         await RefreshData(1);
     }
 
-    //绑定数据
-    async System.Threading.Tasks.Task RefreshData(int page)
+    private async Task OrderCustomers(string orderstr)
+    {
+        vm.OrderBy = orderstr.Split("|")[0];
+        vm.OrderMode = orderstr.Split("|")[1];
+
+        await RefreshData(1);
+    }
+
+    private async Task DeleteItem(int id)
     {
         try
         {
-            vm = await customerService.GetCustomersAsync(page, 10, vm.Keywords); //JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
+            await customerService.Delete(id);
+            await RefreshData(vm.PageIndex + 1);
+        }
+        catch (Exception ex)
+        {
+
+            toastService.ShowError(ex.Message);
+        }
+
+    }
+
+    //绑定数据
+    async Task RefreshData(int page)
+    {
+        try
+        {
+
+            vm = await customerService.GetCustomersAsync(page, 10, vm.Keywords,vm.OrderBy,vm.OrderMode,vm.CustomerType); //JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
             this.StateHasChanged();
         }
         catch (AggregateException ex)
         {
 
-            throw new HttpRequestException(ex.InnerException.Message, ex.InnerException);
+           toastService.ShowError(ex.Message);
         }
 
     }

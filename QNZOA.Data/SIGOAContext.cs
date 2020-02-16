@@ -20,8 +20,6 @@ namespace QNZOA.Data
         public virtual DbSet<ArticleCategory> ArticleCategories { get; set; }
         public virtual DbSet<Badge> Badges { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
-        public virtual DbSet<EmailAccount> EmailAccounts { get; set; }
-        public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
         public virtual DbSet<Link> Links { get; set; }
         public virtual DbSet<LinkCategory> LinkCategories { get; set; }
         public virtual DbSet<Menu> Menus { get; set; }
@@ -31,8 +29,8 @@ namespace QNZOA.Data
         public virtual DbSet<ProjectBusiness> ProjectBusinesses { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RoleMenu> RoleMenus { get; set; }
-        public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<TaskBadge> TaskBadges { get; set; }
+        public virtual DbSet<TaskList> TaskLists { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserProject> UserProjects { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
@@ -76,6 +74,8 @@ namespace QNZOA.Data
 
             modelBuilder.Entity<Menu>(entity =>
             {
+                entity.Property(e => e.MenuType).HasComment("1节点； 2页面；3动作");
+
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Menus)
                     .HasForeignKey(d => d.CategoryId)
@@ -104,9 +104,9 @@ namespace QNZOA.Data
 
             modelBuilder.Entity<Project>(entity =>
             {
-                entity.Property(e => e.Archive).HasComment("是否存档");
+                entity.Property(e => e.Archive).HasComment("归档");
 
-                entity.Property(e => e.ArchiveDate).HasComment("存档时间");
+                entity.Property(e => e.ArchiveDate).HasComment("归档时间");
 
                 entity.Property(e => e.CustomerId).HasComment("客户");
 
@@ -160,28 +160,6 @@ namespace QNZOA.Data
                     .HasConstraintName("FK_RoleMenuSet_RoleSet_RoleId");
             });
 
-            modelBuilder.Entity<Task>(entity =>
-            {
-                entity.Property(e => e.FinishTme).HasComment("完成时间");
-
-                entity.Property(e => e.Performer).HasComment("指派对象");
-
-                entity.Property(e => e.StartTime).HasComment("开始时间");
-
-                entity.Property(e => e.Status).HasComment("1未开始 2进行中 3完成  4已验收 5关闭");
-
-                entity.HasOne(d => d.PerformerNavigation)
-                    .WithMany(p => p.Tasks)
-                    .HasForeignKey(d => d.Performer)
-                    .HasConstraintName("FK_Task_User");
-
-                entity.HasOne(d => d.Project)
-                    .WithMany(p => p.Tasks)
-                    .HasForeignKey(d => d.ProjectId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_TaskSet_TaskSet");
-            });
-
             modelBuilder.Entity<TaskBadge>(entity =>
             {
                 entity.HasKey(e => new { e.TaskId, e.BadgeId });
@@ -195,7 +173,30 @@ namespace QNZOA.Data
                 entity.HasOne(d => d.Task)
                     .WithMany(p => p.TaskBadges)
                     .HasForeignKey(d => d.TaskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TaskBadge_Task");
+            });
+
+            modelBuilder.Entity<TaskList>(entity =>
+            {
+                entity.Property(e => e.FinishTme).HasComment("完成时间");
+
+                entity.Property(e => e.StartTime).HasComment("开始时间");
+
+                entity.Property(e => e.Status).HasComment("1未开始 2进行中 3完成  4已验收 5关闭");
+
+                entity.Property(e => e.WorkHours).HasComment("工时");
+
+                entity.HasOne(d => d.PerformerNavigation)
+                    .WithMany(p => p.TaskLists)
+                    .HasForeignKey(d => d.Performer)
+                    .HasConstraintName("FK_Task_User");
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(p => p.TaskLists)
+                    .HasForeignKey(d => d.ProjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TaskSet_TaskSet");
             });
 
             modelBuilder.Entity<User>(entity =>

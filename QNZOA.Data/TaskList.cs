@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QNZOA.Data
 {
-    [Table("Task")]
-    public partial class Task
+    [Table("TaskList")]
+    public partial class TaskList
     {
-        public Task()
+        public TaskList()
         {
             TaskBadges = new HashSet<TaskBadge>();
         }
@@ -35,10 +35,10 @@ namespace QNZOA.Data
         public DateTime? FinishTme { get; set; }
 
         [ForeignKey(nameof(Performer))]
-        [InverseProperty(nameof(User.Tasks))]
+        [InverseProperty(nameof(User.TaskLists))]
         public virtual User PerformerNavigation { get; set; }
         [ForeignKey(nameof(ProjectId))]
-        [InverseProperty("Tasks")]
+        [InverseProperty("TaskLists")]
         public virtual Project Project { get; set; }
         [InverseProperty(nameof(TaskBadge.Task))]
         public virtual ICollection<TaskBadge> TaskBadges { get; set; }
