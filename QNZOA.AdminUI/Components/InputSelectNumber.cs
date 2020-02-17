@@ -10,25 +10,27 @@ namespace QNZOA.AdminUI.Components
     {
         protected override bool TryParseValueFromString(string value, out T result, out string validationErrorMessage)
         {
-            if (typeof(T) == typeof(int))
-            {
-                if (int.TryParse(value, out var resultInt))
+          
+                if (typeof(T) == typeof(int))
                 {
-                    result = (T)(object)resultInt;
-                    validationErrorMessage = null;
-                    return true;
+                    if (int.TryParse(value, out var resultInt))
+                    {
+                        result = (T)(object)resultInt;
+                        validationErrorMessage = null;
+                        return true;
+                    }
+                    else
+                    {
+                        result = default;
+                        validationErrorMessage = "选择的值不是有效的数字。";
+                        return false;
+                    }
                 }
                 else
                 {
-                    result = default;
-                    validationErrorMessage = "选择的值不是有效的数字。";
-                    return false;
-                }
-            }
-            else
-            {
-                return base.TryParseValueFromString(value, out result, out validationErrorMessage);
-            }
+                    return base.TryParseValueFromString(value, out result, out validationErrorMessage);
+                }           
+           
         }
     }
 
@@ -48,6 +50,32 @@ namespace QNZOA.AdminUI.Components
                 {
                     result = default;
                     validationErrorMessage = "选择的值不是有效的数字。";
+                    return false;
+                }
+            }
+            else
+            {
+                return base.TryParseValueFromString(value, out result, out validationErrorMessage);
+            }
+        }
+    }
+
+    public class InputSelectGuid<T> : InputSelect<T>
+    {
+        protected override bool TryParseValueFromString(string value, out T result, out string validationErrorMessage)
+        {
+            if (typeof(T) == typeof(Guid))
+            {
+                if (Guid.TryParse(value, out var resultGuid))
+                {
+                    result = (T)(object)resultGuid;
+                    validationErrorMessage = null;
+                    return true;
+                }
+                else
+                {
+                    result = default;
+                    validationErrorMessage = "选择的值不是有效的Guid值。";
                     return false;
                 }
             }

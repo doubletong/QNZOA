@@ -8,6 +8,7 @@ namespace QNZOA.AdminUI.Services
 {
     public interface IAccountService
     {
-        public Task<ReturnVM> LoginAsync(LoginIM loginIM);
+        //public Task<ReturnVM> LoginAsync(LoginIM loginIM);
+        Task<IEnumerable<UserForSelectVM>> GetUsersForSelectAsync();
     }
 }

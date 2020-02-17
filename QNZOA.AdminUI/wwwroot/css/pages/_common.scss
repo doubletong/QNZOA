@@ -141,3 +141,14 @@ img {
         }
     }
 }
+
+.validation-errors {
+    border: 1px lighten($color-important,45%) solid;
+    padding: 1rem 3rem;
+    background-color: lighten($color-important,55%);
+    border-radius:6px;
+
+    .validation-message {
+        color: $color-important;
+    }
+}

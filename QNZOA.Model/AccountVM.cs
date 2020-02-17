@@ -29,4 +29,20 @@ namespace QNZOA.Model
         public string PhotoUrl { get; set; }
         public string Token { get; set; }
     }
+
+    public class UserForSelectVM
+    {
+        public Guid Id { get; set; }
+        public string Username { get; set; }
+        public string RealName { get; set; }
+        public string DisplayName
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(RealName))
+                    return $"{RealName} 【{Username}】";
+                return Username;
+            }
+        }
+    }
 }

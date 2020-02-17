@@ -92,9 +92,11 @@ namespace QNZOA.AdminUI.Services
             return await _db.Customers.FindAsync(id);
         }
 
-        public IQueryable<Customer> GetCustomers()
+        public async Task<IEnumerable<CustomerForSelectVM>> GetCustomersForSelectAsync()
         {
-            return _db.Customers.OrderByDescending(d=>d.Id).AsQueryable();
+            return await _db.Customers.OrderByDescending(d=>d.Id)
+                .ProjectTo<CustomerForSelectVM>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
         public async Task CreateCustomerAsync(CustomerIM item)
         {

@@ -1,4 +1,6 @@
-﻿@*<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject IJSRuntime JSRuntime;
+
+@*<div class="top-row pl-4 navbar navbar-dark">
         <button class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -8,35 +10,64 @@
 
 <nav id="menu">
     <ul class="mainmenu" id="mainmenu">
-        <li class="liitem">
+        <li>
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <i class="iconfont icon-dashboard" aria-hidden="true"></i> 控制面版
             </NavLink>
         </li>
+        <li class="down-nav @OpenClsaaName">
+            <a href="javascript:void(0);"><i class="iconfont icon-antdesign"></i> 项目管理 <i class="arrow iconfont icon-down"></i></a>
+            <ul class="submenu @OpenClsaaName">
+                <li>
+                    <NavLink class="nav-link" href="projects/index">
+                        进行中
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink class="nav-link" href="projects/archive">
+                        已归档
+                    </NavLink>
+                </li>
+            </ul>
+        </li>
+        @*<li class="liitem">
+                <NavLink class="nav-link" href="projects">
+                    <i class="iconfont icon-antdesign" aria-hidden="true"></i> 项目管理
+                </NavLink>
+            </li>*@
 
-        <li class="liitem">
-            <NavLink class="nav-link" href="counter">
-                <i class="iconfont icon-plus" aria-hidden="true"></i> Counter
-            </NavLink>
-        </li>
-        <li class="liitem">
-            <NavLink class="nav-link" href="fetchdata">
-                <i class="iconfont icon-list" aria-hidden="true"></i> Fetch data
-            </NavLink>
-        </li>
-        <li class="liitem">
+        <li>
             <NavLink class="nav-link" href="customers">
                 <i class="iconfont icon-customer" aria-hidden="true"></i> 客户
             </NavLink>
         </li>
-        <li class="liitem">
-            <NavLink class="nav-link" href="QNZFinder">
+        <li>
+            <NavLink class="nav-link" href="qnzfinder">
                 <i class="iconfont icon-image" aria-hidden="true"></i> 文件管理
             </NavLink>
         </li>
     </ul>
-    </nav>
+</nav>
 
-    @code {
-    
+@code {
+    private bool isOpen = false;
+    string OpenClsaaName = string.Empty;
+
+    protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+               await JSRuntime.InvokeVoidAsync("App.SiteInit");
+           // OpenClsaaName = isOpen ? "open" : "";
+        }
+
+
     }
+
+    private void OpenSubNav()
+    {
+        isOpen = !isOpen;
+        OpenClsaaName = isOpen ? "open" : "";
+    }
+}

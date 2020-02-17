@@ -60,8 +60,9 @@ namespace QNZOA.AdminUI
             services.AddAutoMapper(typeof(Startup).Assembly);
 
             services.AddSingleton<WeatherForecastService>();
-            //services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAccountService, AccountService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<AuthenticationStateProvider, QNZAuthenticationStateProvider>();
         }

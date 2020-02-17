@@ -16,8 +16,8 @@ namespace QNZOA.Model
             get
             {
                 if (CustomerType == 1)
-                    return $"个人-{Name}";
-                return $"公司-{Name}";
+                    return $"{Name} [个人]";
+                return $"{Name} [公司]";
             }
         }
 

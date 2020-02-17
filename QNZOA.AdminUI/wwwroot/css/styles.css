@@ -7292,6 +7292,14 @@ img {
   .table td .btn {
     margin-left: .3rem; }
 
+.validation-errors {
+  border: 1px #ffc4c4 solid;
+  padding: 1rem 3rem;
+  background-color: #fff7f7;
+  border-radius: 6px; }
+  .validation-errors .validation-message {
+    color: #d00; }
+
 .site-header {
   background-image: -webkit-gradient(linear, right top, left top, from(rgba(51, 148, 225, 0.18)), to(transparent));
   background-image: linear-gradient(270deg, rgba(51, 148, 225, 0.18), transparent);

@@ -8,8 +8,7 @@ var RichTextEditor = {
             selector: '#' + mytextarea
         });
     },
-    loadFullTinymce: function (mytextarea) {
-      
+    loadFullTinymce: function (mytextarea) {     
 
         tinymce.init({
             selector: '#' + mytextarea,
@@ -27,10 +26,7 @@ var RichTextEditor = {
             autosave_restore_when_empty: false,
             autosave_retention: "2m",
             image_advtab: true,
-            content_css: [
-                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-                '//www.tiny.cloud/css/codepen.min.css'
-            ],
+         
             link_list: [
                 { title: 'My page 1', value: 'http://www.tinymce.com' },
                 { title: 'My page 2', value: 'http://www.moxiecode.com' }
@@ -53,31 +49,58 @@ var RichTextEditor = {
             ],
             template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
             template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
-            height: 600,
+       
             image_caption: true,
             quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
             noneditable_noneditable_class: "mceNonEditable",
             toolbar_drawer: 'sliding',
             contextmenu: "link image imagetools table",
+            //setup: function (ed) {
+            //    ed.on('change', function (e) {
+               
+            //        var content = tinyMCE.get(ed.id).getContent();
+            //        console.log(content);
+            //        var escapedClassName = ed.id.replace(/(\[|\])/g, '\\$&');
+                    
+            //      //  $('#' + escapedClassName).html(content).tirgger("change");
+            //        var d = document.getElementById(escapedClassName);
+            //        console.log(d);
+            //        d.innerHTML = content;                 
+            //        d.dispatchEvent(new Event('change'));   // 解决动态改变值不触发change事件的问题
+            //    });
+            //}
         });
+    },
+    getTinymceContent:function(el) {
+        return tinyMCE.get(el).getContent()
     }
 
 };
 
 
 var App = {
+
     holder: function (myImage){
         var myImage = document.getElementById(myImage);
         Holder.run({
             images: myImage
-        });
-
-       
+        });       
     },
 
     CallSingleFinder: function () {
         QNZ.selectActionFunction = SetThumbnail;
         QNZ.open();
+    },
+
+    SiteInit: function () {
+        // 菜单折叠
+        $("#mainmenu .down-nav>a").click(function (e) {
+            e.preventDefault();
+            var $that = $(this);
+            $that.next('.submenu').slideToggle(function () {
+                $that.closest('li.down-nav').toggleClass('open')
+            });
+        })
     }
 }
 
@@ -90,6 +113,6 @@ function SetThumbnail(fileUrl) {
   
     d.value = fileUrl;  
     d.dispatchEvent(new Event('change'));   // 解决动态改变值不触发change事件的问题
- 
    
 }
+

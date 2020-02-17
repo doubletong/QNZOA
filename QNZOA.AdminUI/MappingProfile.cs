@@ -18,17 +18,21 @@ namespace QNZOA.AdminUI
             CreateMap<CustomerIM, Customer>();
             CreateMap<Customer, CustomerIM>();
 
-            //CreateMap<Project, ProjectVM>()
-            //      .ForMember(d => d.UserCount, opt => opt.MapFrom(source => source.UserProjects.Count))
-            //      .ForMember(d => d.ManagerName, opt => opt.MapFrom(source => $"{source.ManagerNavigation.RealName} [{source.ManagerNavigation.Username}]"))
-            //      .ForMember(d => d.TaskCount, opt => opt.MapFrom(source => source.Tasks.Count))
-            //        .ForMember(d => d.CustomerName, opt => opt.MapFrom(source => source.Customer.Name));
+            CreateMap<Project, ProjectVM>()
+                  .ForMember(d => d.UserCount, opt => opt.MapFrom(source => source.UserProjects.Count))
+                  .ForMember(d => d.ManagerName, opt => opt.MapFrom(source => $"{source.ManagerNavigation.RealName} [{source.ManagerNavigation.Username}]"))
+                  .ForMember(d => d.TaskCount, opt => opt.MapFrom(source => source.TaskLists.Count))
+                  .ForMember(d => d.CustomerName, opt => opt.MapFrom(source => source.Customer.Name));
 
-        
+            CreateMap<Project, ProjectDetailVM>()
+                 .ForMember(d => d.UserCount, opt => opt.MapFrom(source => source.UserProjects.Count))
+                 .ForMember(d => d.ManagerName, opt => opt.MapFrom(source => $"{source.ManagerNavigation.RealName} [{source.ManagerNavigation.Username}]"))
+                 .ForMember(d => d.TaskCount, opt => opt.MapFrom(source => source.TaskLists.Count))
+                 .ForMember(d => d.CustomerName, opt => opt.MapFrom(source => source.Customer.Name));
 
-          
-            //CreateMap<ProjectIM, Project>();
-            //CreateMap<Project, ProjectIM>();
+
+            CreateMap<ProjectIM, Project>();
+            CreateMap<Project, ProjectIM>();
 
             //CreateMap<ProjectBusiness, ProjectBusinessVM>()
             // .ForMember(d => d.ProjectName, opt => opt.MapFrom(source => source.Project.Name))
@@ -46,7 +50,7 @@ namespace QNZOA.AdminUI
 
 
             //CreateMap<User, UserVM>();
-            //CreateMap<User, UserForSelectVM>();
+            CreateMap<User, UserForSelectVM>();
             //CreateMap<UserIM, User>();
             //CreateMap<User, UserIM>();
 
@@ -60,7 +64,7 @@ namespace QNZOA.AdminUI
             //CreateMap<MenuIM, Menu>();
             //CreateMap<MenuCategory, MenuCategoryVM>();
             //CreateMap<Menu, RoleMenusIM>();
-            
+
 
 
 
@@ -73,7 +77,7 @@ namespace QNZOA.AdminUI
             //CreateMap<Article, ArticleDetailVM>()
             //     .ForMember(d => d.CategoryTitle, opt => opt.MapFrom(source => source.Category.Title));
 
-            
+
             //CreateMap<Article, ArticleIM>();
             //CreateMap<ArticleIM, Article>();
 

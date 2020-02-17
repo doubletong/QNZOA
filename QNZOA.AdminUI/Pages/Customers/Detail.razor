@@ -1,4 +1,5 @@
-﻿@page "/Customers/{Id:int}"
+﻿@page "/customers/{Id:int}"
+
 @inject ICustomerService customerService
 @attribute [Authorize]
 
@@ -8,7 +9,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/">控制面板</a></li>
-                    <li class="breadcrumb-item"><a href="/customers.html">客户管理</a></li>
+                    <li class="breadcrumb-item"><a href="/customers">客户管理</a></li>
                     <li class="breadcrumb-item active" aria-current="page">@vm.Name</li>
                 </ol>
             </nav>

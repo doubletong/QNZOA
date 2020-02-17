@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
-    <Content Remove="Pages\Projects\Index.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Projects\" />
     <Folder Include="Pages\Users\" />
     <Folder Include="wwwroot\img\" />
     <Folder Include="wwwroot\js\vendor\" />

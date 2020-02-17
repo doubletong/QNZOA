@@ -2,6 +2,9 @@
 @page "/customers/edit/{Id:int}"
 @attribute [Authorize]
 
+
+
+
 @using QNZOA.AdminUI.Components
 @inject ICustomerService customerService
 @inject IToastService toastService
@@ -135,6 +138,7 @@
 
     private async System.Threading.Tasks.Task HandleValidSubmit()
     {
+         CustomerIM.Description = await JSRuntime.InvokeAsync<string>("RichTextEditor.getTinymceContent", "description");
         try
         {
             if (Id != null)

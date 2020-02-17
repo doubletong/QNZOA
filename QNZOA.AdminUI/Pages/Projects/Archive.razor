@@ -1,5 +1,4 @@
-﻿@page "/customers"
-@page "/customers/index"
+﻿@page "/projects/archive"
 
 @attribute [Authorize]
 
@@ -9,7 +8,7 @@
 @inject ILocalStorageService localStorage
 @inject IHttpClientFactory clientFactory
 @inject ICustomerService customerService
-
+@inject IProjectService projectService
 
 <div class="breadcrumb-container">
     <div class="row">
@@ -17,7 +16,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/">控制面板</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">客户管理</li>
+                    <li class="breadcrumb-item"><a href="/projects/index">项目</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">已归档</li>
                 </ol>
             </nav>
         </div>
@@ -28,17 +28,23 @@
 </div>
 
 <div class="page-customer">
-    <QNZCardComponent Title="客户列表" FontIcon="icon-customer">
+    <QNZCardComponent Title="已归档项目" FontIcon="icon-antdesign">
         <section class="card-body">
             <div class="card-toolbar mb-3">
                 <div class="row">
                     <div class="col">
                         <div class="form-inline">
                             <input type="text" class="form-control mr-sm-2" @bind="vm.Keywords" placeholder="关键字" />
-                            <select id="classification" @bind="vm.CustomerType" class="form-control mr-sm-2">
+                            <select id="classification" @bind="vm.CustomerId" class="form-control mr-sm-2">
                                 <option value="0">请选择 ...</option>
-                                <option value="2">企业</option>
-                                <option value="1">个人</option>
+                                @if (Customers != null)
+                                {
+                                    foreach (var item in Customers)
+                                    {
+                                        <option value="@item.Id">@item.DisplayName</option>
+                                    }
+                                }
+
                             </select>
                             <button type="button" class="btn btn-info" @onclick="SearchCustomers"><span class="iconfont icon-search"></span> 搜索</button>
                         </div>
@@ -50,7 +56,7 @@
             </div>
 
 
-            @if (vm.Customers == null)
+            @if (vm.Projects == null)
             {
                 <div class="d-flex align-items-center">
                     <strong>加载中...</strong>
@@ -63,77 +69,45 @@
                     <table class='table table-striped table-bordered'>
                         <thead>
                             <tr>
-                                <th>Logo</th>
-                                <th>  
+
+                                <th>
                                     <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="name" HeaderText="名称" OnClick="OrderCustomers" />
                                 </th>
-                                <th>类型</th>
-                                <th>联系电话/邮箱/主页</th>
-                                <th>项目数量</th>
+                                <th>客户</th>
+                                <th>期限</th>
+                                <th>主管</th>
+                                <th>参与人数</th>
+                                <th>任务数</th>
                                 <th>
-                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="createdDate" HeaderText="创建时间" OnClick="OrderCustomers" />                                    
+                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="createdDate" HeaderText="创建时间" OnClick="OrderCustomers" />
                                 </th>
 
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in vm.Customers)
+                            @foreach (var item in vm.Projects)
                             {
                                 <tr>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(item.Logo))
-                                        {
-                                            <img src="@item.Logo" style="height:30px;" />
-                                        }
-                                        else
-                                        {
-                                            <img src="https://www.fillmurray.com/g/210/70" alt="">
-                                        }
 
-                                    </td>
                                     <td>@item.Name</td>
                                     <td>
-                                        @{
-                                            if (item.CustomerType == 1)
-                                            {
-                                                <span>个人</span>
-                                            }
-                                            else
-                                            {
-                                                <span>公司</span>
-                                            }
-
-                                        }
+                                        @item.CustomerName
                                     </td>
 
                                     <td>
-                                        <ul>
-                                            @if (!string.IsNullOrEmpty(item.Phone))
-                                            {
-                                                <li><i class="iconfont icon-mobile"></i><a href="tel:@item.Phone">@item.Phone</a></li>
-                                            }
-                                            @if (!string.IsNullOrEmpty(item.Email))
-                                            {
-                                                <li><i class="iconfont icon-mail"></i><a href="mailto:@item.Email">@item.Email</a></li>
-                                            }
-                                            @if (!string.IsNullOrEmpty(item.Homepage))
-                                            {
-                                                <li><i class="iconfont icon-home"></i><a href="@item.Homepage" target="_blank">@item.Homepage</a></li>
-                                            }
-                                        </ul>
-
-
+                                        @($"{item.StartDate:yyyy-MM-dd} 至 {item.EndDate:yyyy-MM-dd}")
                                     </td>
 
-                                    <td>@item.ProjectCount</td>
+                                    <td>@item.ManagerName</td>
+                                    <td>@item.UserCount</td>
+                                    <td>@item.TaskCount</td>
                                     <td>@string.Format("{0:d}", item.CreatedDate)</td>
                                     <td>
                                         <a class="btn btn-info btn-sm" href="/Customers/@item.Id">
                                             <i class="iconfont icon-ellipsis"></i>
-                                        </a>
-                                        <a class="btn btn-primary btn-sm" href="/Customers/Edit/@item.Id" title="编辑"><i class="iconfont icon-edit"></i></a>
-                                        <button class="btn btn-danger btn-sm" type="button" @onclick="(async () => await DeleteItem(item.Id))" title="删除"><i class="iconfont icon-delete"></i></button>
+                                        </a>                                    
+                                        <button class="btn btn-primary btn-sm" type="button" @onclick="(async () => await UnArchiveItem(item.Id))" title="解档"><i class="iconfont icon-folder-open"></i></button>
 
                                     </td>
                                 </tr>
@@ -165,8 +139,8 @@
 
 
 @code {
-    CustomerPagedVM vm = new CustomerPagedVM();
-
+    ProjectPagedVM vm = new ProjectPagedVM();
+    IEnumerable<CustomerForSelectVM> Customers;
 
 
     protected override void OnAfterRender(bool firstRender)
@@ -177,6 +151,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Customers = await customerService.GetCustomersForSelectAsync();
+
         await RefreshData(1);
         //   this.StateHasChanged();
     }
@@ -200,11 +176,11 @@
         await RefreshData(1);
     }
 
-    private async Task DeleteItem(int id)
+    private async Task UnArchiveItem(int id)
     {
         try
         {
-            await customerService.Delete(id);
+            await projectService.UnArchive(id);
             await RefreshData(vm.PageIndex + 1);
         }
         catch (Exception ex)
@@ -221,13 +197,13 @@
         try
         {
 
-            vm = await customerService.GetCustomersAsync(page, 10, vm.Keywords,vm.OrderBy,vm.OrderMode,vm.CustomerType); //JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
+            vm = await projectService.GetProjectsAsync(page, 10, vm.Keywords, vm.OrderBy, vm.OrderMode, true, vm.CustomerId); //JsonConvert.DeserializeObject<CustomerPagedVM>(responseBody);
             this.StateHasChanged();
         }
         catch (AggregateException ex)
         {
 
-           toastService.ShowError(ex.Message);
+            toastService.ShowError(ex.Message);
         }
 
     }

@@ -19,9 +19,9 @@ namespace QNZOA.Data
         [Key]
         public int Id { get; set; }
         [Required]
-        [StringLength(20)]
+        [StringLength(100)]
         public string Name { get; set; }
-        [StringLength(500)]
+     
         public string Description { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }

@@ -16,9 +16,7 @@
     </div>
 
 @code {
-    private bool collapseCard = false;
-    private string CardCssClass => collapseCard ? "card-fixed" : null;
-
+   
     [Parameter]
     public string Title { get; set; }
     
@@ -27,6 +25,10 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    private bool collapseCard = false;
+    private string CardCssClass => collapseCard ? "card-fixed" : null;
+
 
     private void ToggleCard()
     {
