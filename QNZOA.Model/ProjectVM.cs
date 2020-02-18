@@ -7,6 +7,13 @@ using System.Text;
 
 namespace QNZOA.Model
 {
+    #region project
+    public class ProjectForSelectVM
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+    }
     public class ProjectVM
     {
         public int Id { get; set; }
@@ -77,4 +84,59 @@ namespace QNZOA.Model
 
 
     }
+    #endregion
+
+    #region ProjectBusinesses
+    public class ProjectBusinessVM
+    {
+
+        public int ProjectId { get; set; }
+        public decimal Amount { get; set; }
+
+        public string Contract { get; set; }
+        public string ProjectName { get; set; }
+        public List<PaymentlogVM> Paymentlogs { get; set; }
+        public decimal Paymented { get; set; }
+        public DateTime CreatedDate { get; set; }
+    }
+
+    public class ProjectBusinessPagedVM
+    {
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public int RowCount { get; set; }
+        public string Keywords { get; set; }
+        public IEnumerable<ProjectBusinessVM> ProjectBusinesses { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal TotalPaymented { get; set; }
+
+        public string OrderBy { get; set; }
+        public string OrderMode { get; set; }
+      
+        public int LastPageIndex
+        {
+            get
+            {
+                if (PageSize > 0)
+                {
+                    var d = RowCount / PageSize;
+                    return (int)Math.Floor((double)d);
+                }
+                return 0;
+            }
+        }
+    }
+
+    public partial class ProjectBusinessIM
+    {
+        public int ProjectId { get; set; }
+        public decimal Amount { get; set; }
+        public string Contract { get; set; }
+
+        public string ProjectName { get; set; }
+
+    }
+
+
+    #endregion
 }

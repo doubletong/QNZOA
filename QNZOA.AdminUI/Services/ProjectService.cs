@@ -122,6 +122,25 @@ namespace QNZOA.AdminUI.Services
             return users;
         }
 
+        public async Task<IEnumerable<ProjectForSelectVM>> GetForBusinessSelectAsync()
+        {
+
+            return await _db.Projects.AsNoTracking()
+                .Where(d => d.ProjectBusiness!=null)
+                .OrderByDescending(d => d.Id)
+                .Select(d => new ProjectForSelectVM { Id = d.Id, Name = d.Name })
+                .ToListAsync();
+
+        }
+        public async Task<IEnumerable<ProjectForSelectVM>> GetForNoBusinessSelectAsync()
+        {
+
+            return await _db.Projects.Where(d => d.ProjectBusiness == null)
+                .OrderByDescending(d => d.Id)
+                .Select(d => new ProjectForSelectVM { Id = d.Id, Name = d.Name })
+                .ToListAsync();
+
+        }
         public async Task AddProjectUsers(UserProject item)
         {
             if(!_db.UserProjects.Any(d=>d.ProjectId == item.ProjectId && d.UserId == item.UserId))

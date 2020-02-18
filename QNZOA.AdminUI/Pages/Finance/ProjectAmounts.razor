@@ -1,0 +1,210 @@
+﻿@page "/finance/business"
+
+@attribute [Authorize]
+
+@using QNZOA.AdminUI.Components
+
+@inject IToastService toastService
+@inject ILocalStorageService localStorage
+@inject IHttpClientFactory clientFactory
+@inject IFinanceService financeService
+
+
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">财务</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">项目款</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+
+<div class="page-customer">
+    <QNZCardComponent Title="项目金额" FontIcon="icon-moneycollect">
+        <section class="card-body">
+            <div class="card-toolbar mb-3">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-inline">
+                            <input type="text" class="form-control mr-sm-2" @bind="vm.Keywords" placeholder="关键字" />                            
+                            <button type="button" class="btn btn-info" @onclick="SearchCustomers"><span class="iconfont icon-search"></span> 搜索</button>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/finance/business/edit" class="btn btn-primary"><span class="iconfont icon-plus"></span> 添加</a>
+                    </div>
+                </div>
+            </div>
+
+
+            @if (vm.ProjectBusinesses == null)
+            {
+                <div class="d-flex align-items-center">
+                    <strong>加载中...</strong>
+                    <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class='table table-striped table-bordered'>
+                        <thead>
+                            <tr>
+                          
+                                <th>
+                                    名称
+                                </th>
+                                <th> <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="amount" HeaderText="金额" OnClick="OrderCustomers" /></th>
+                                <th>未结金额</th>
+                                <th>合同</th>
+                                <th>
+                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="createdDate" HeaderText="创建时间" OnClick="OrderCustomers" />
+                                </th>
+
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in vm.ProjectBusinesses)
+                            {
+                                <tr>
+
+                                    <td>@item.ProjectName</td>
+                                    <td>
+                                        @string.Format("{0:c}", item.Amount)
+                                    </td>
+
+                                    @if (item.Amount == item.Paymented)
+                                    {
+                                        <td class="text-success">已结</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-danger">@string.Format("{0:c}", item.Amount - item.Paymented)</td>
+                                    }
+
+                                    <td>@item.Contract</td>
+                                    <td>@string.Format("{0:d}", item.CreatedDate)</td>
+                                    <td>
+                                        <a class="btn btn-info btn-sm" href="/finance/business/@item.ProjectId">
+                                            <i class="iconfont icon-ellipsis"></i>
+                                        </a>
+                                        <a class="btn btn-primary btn-sm" href="/finance/business/edit/@item.ProjectId" title="编辑"><i class="iconfont icon-edit"></i></a>
+                                        <button class="btn btn-danger btn-sm" type="button" @onclick="(async () => await DeleteItem(item.ProjectId))" title="删除"><i class="iconfont icon-delete"></i></button>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="text-right">合计</td>
+                                <th>@string.Format("{0:c}", vm.TotalAmount)</th>
+                                <th>@string.Format("{0:c}", (vm.TotalAmount - vm.TotalPaymented))</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            }
+        </section>
+        <footer class="card-footer">
+            <div class="row table-pager">
+                <div class="col-md">
+                    <Pagination PageSize="@vm.PageSize"
+                                PageIndex="@vm.PageIndex"
+                                LastPageIndex="@vm.LastPageIndex" ShowPageCount="6"
+                                PageChanged="@(async (e) => await PagerPageChanged(e))" />
+                </div>
+                <div class="col-md-auto">
+                    总记录数：@vm.RowCount 条，页：@(vm.PageIndex + 1) / @(vm.LastPageIndex + 1)
+                </div>
+
+            </div>
+        </footer>
+    </QNZCardComponent>
+</div>
+
+
+
+
+@code {
+    ProjectBusinessPagedVM vm = new ProjectBusinessPagedVM();
+
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+
+        // base.OnAfterRender(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData(1);
+        //   this.StateHasChanged();
+    }
+
+
+    protected async Task PagerPageChanged(int page)
+    {
+        await RefreshData(page);
+    }
+    //搜索
+    private async Task SearchCustomers()
+    {
+        await RefreshData(1);
+    }
+
+    private async Task OrderCustomers(string orderstr)
+    {
+        vm.OrderBy = orderstr.Split("|")[0];
+        vm.OrderMode = orderstr.Split("|")[1];
+
+        await RefreshData(1);
+    }
+
+    private async Task DeleteItem(int id)
+    {
+        try
+        {
+            await financeService.Delete(id);
+            await RefreshData(vm.PageIndex + 1);
+        }
+        catch (Exception ex)
+        {
+
+            toastService.ShowError(ex.Message);
+        }
+
+    }
+
+    //绑定数据
+    async Task RefreshData(int page)
+    {
+        try
+        {
+
+            vm = await financeService.GetListAsync(page, 10, vm.Keywords, vm.OrderBy, vm.OrderMode); 
+            this.StateHasChanged();
+        }
+        catch (AggregateException ex)
+        {
+
+            toastService.ShowError(ex.Message);
+        }
+
+    }
+
+}

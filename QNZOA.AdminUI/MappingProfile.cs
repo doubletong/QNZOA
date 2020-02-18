@@ -34,18 +34,20 @@ namespace QNZOA.AdminUI
             CreateMap<ProjectIM, Project>();
             CreateMap<Project, ProjectIM>();
 
-            //CreateMap<ProjectBusiness, ProjectBusinessVM>()
-            // .ForMember(d => d.ProjectName, opt => opt.MapFrom(source => source.Project.Name))
-            // //.ForMember(d => d.Paymentlogs, opt => opt.MapFrom(source => source.Paymentlogs))
-            // .ForMember(d => d.Paymented, opt => opt.MapFrom(source => source.Paymentlogs.Where(d=>d.Money>0).Sum(d=>d.Money)));
+            CreateMap<ProjectBusiness, ProjectBusinessVM>()
+             .ForMember(d => d.ProjectName, opt => opt.MapFrom(source => source.Project.Name))
+             .ForMember(d => d.CreatedDate, opt => opt.MapFrom(source => source.Project.CreatedDate))
+             .ForMember(d => d.Paymented, opt => opt.MapFrom(source => source.Paymentlogs.Where(d => d.Money > 0).Sum(d => d.Money)));
 
-            //CreateMap<ProjectBusinessIM, ProjectBusiness>();
+            CreateMap<ProjectBusinessIM, ProjectBusiness>();
+            CreateMap<ProjectBusiness, ProjectBusinessIM>()
+                 .ForMember(d => d.ProjectName, opt => opt.MapFrom(source => source.Project.Name));
 
 
-            //CreateMap<Paymentlog, PaymentlogVM>()
-            //    .ForMember(d => d.ProjectName, opt => opt.MapFrom(source => source.Project.Name));
-            //CreateMap<PaymentlogIM, Paymentlog>();
-
+            CreateMap<Paymentlog, PaymentlogVM>()
+                .ForMember(d => d.ProjectName, opt => opt.MapFrom(source => source.Project.Name));
+            CreateMap<PaymentlogIM, Paymentlog>();
+            CreateMap<Paymentlog, PaymentlogIM>();
 
 
 

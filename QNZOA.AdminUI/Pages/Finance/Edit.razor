@@ -1,0 +1,151 @@
+﻿@page "/finance/business/edit"
+@page "/finance/business/edit/{Id:int}"
+@attribute [Authorize]
+
+
+
+@using QNZOA.AdminUI.Components
+@inject IProjectService projectService
+@inject IFinanceService financeService
+@inject IToastService toastService
+@inject AutoMapper.IMapper _mapper
+@inject NavigationManager navigationManager
+
+
+@inject IJSRuntime JSRuntime;
+
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item"><a href="/finance/business">项目金额</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">编辑</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+<EditForm Model="@vm" OnValidSubmit="@HandleValidSubmit">
+    <div class="card">
+        <header class="card-header">
+            <div class="row">
+                <div class="col">
+                    <div class="card-title-v1"><i class="iconfont icon-customer"></i>@(Id > 0 ? "编辑项目金额" : "创建项目金额")</div>
+                </div>
+                <div class="col-auto">
+                    <div class="control"><a class="expand" href="#"><i class="iconfont icon-fullscreen"></i></a><a class="compress" href="#" style="display: none;"><i class="iconfont icon-shrink"></i></a></div>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            @if (Id > 0)
+            {
+                <p>项目：@vm.ProjectName</p>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label for="projectId">项目</label>
+                    <InputSelectNumber id="projectId" @bind-Value="vm.ProjectId" class="form-control">
+                        <option value="">请选择 ...</option>
+                        @if (Projects != null)
+                            {
+                                foreach (var item in Projects)
+                                {
+                                <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                    </InputSelectNumber>
+                </div>
+            }
+
+
+
+
+            <div class="form-group">
+                <label for="phone">金额</label>
+                <InputNumber id="phone" @bind-Value="vm.Amount" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">描述</label>
+                <InputText id="description" @bind-Value="vm.Contract" class="form-control" />
+            </div>
+
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-primary" type="submit"><i class="iconfont icon-save"></i>提交</button>
+            <a href="/finance/business" class="btn btn-secondary"><i class="iconfont icon-rollback"></i>返回</a>
+        </div>
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    private ProjectBusinessIM vm = new ProjectBusinessIM();
+    private IEnumerable<ProjectForSelectVM> Projects;
+
+
+    //protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
+    //{
+
+    //    if (firstRender)
+    //    {
+
+    //    }
+
+    //    //base.OnAfterRender(firstRender);
+    //}
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        Projects = await projectService.GetForNoBusinessSelectAsync();
+
+        if (Id != null)
+        {
+            var project = await financeService.Get(Id.Value);
+            vm = _mapper.Map<ProjectBusinessIM>(project);
+        }
+
+    }
+
+    private async System.Threading.Tasks.Task HandleOpenFinder()
+    {
+        await JSRuntime.InvokeVoidAsync("App.CallSingleFinder");
+    }
+
+    private async System.Threading.Tasks.Task HandleValidSubmit()
+    {
+
+        try
+        {
+            if (Id != null)
+            {
+                await financeService.UpdateAsync(Id.Value, vm);
+                toastService.ShowSuccess("项目金额已更新");
+            }
+            else
+            {
+                await financeService.CreateAsync(vm);
+                navigationManager.NavigateTo("/finance/business");
+            }
+
+
+
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+
+        }
+    }
+}

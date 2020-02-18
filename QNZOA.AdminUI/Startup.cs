@@ -64,6 +64,9 @@ namespace QNZOA.AdminUI
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IFinanceService, FinanceService>();
+            services.AddTransient<IPaymentlogService, PaymentlogService>();
+            
             services.AddScoped<AuthenticationStateProvider, QNZAuthenticationStateProvider>();
         }
 

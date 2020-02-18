@@ -15,9 +15,9 @@
                 <i class="iconfont icon-dashboard" aria-hidden="true"></i> 控制面版
             </NavLink>
         </li>
-        <li class="down-nav @OpenClsaaName">
-            <a href="javascript:void(0);"><i class="iconfont icon-antdesign"></i> 项目管理 <i class="arrow iconfont icon-down"></i></a>
-            <ul class="submenu @OpenClsaaName">
+        <li class="down-nav">
+            <a href="javascript:void(0);"><i class="iconfont icon-antdesign"></i> 项目 <i class="arrow iconfont icon-down"></i></a>
+            <ul class="submenu">
                 <li>
                     <NavLink class="nav-link" href="projects/index">
                         进行中
@@ -30,28 +30,33 @@
                 </li>
             </ul>
         </li>
-        @*<li class="liitem">
-                <NavLink class="nav-link" href="projects">
-                    <i class="iconfont icon-antdesign" aria-hidden="true"></i> 项目管理
-                </NavLink>
-            </li>*@
 
         <li>
             <NavLink class="nav-link" href="customers">
                 <i class="iconfont icon-customer" aria-hidden="true"></i> 客户
             </NavLink>
         </li>
-        <li>
-            <NavLink class="nav-link" href="qnzfinder">
-                <i class="iconfont icon-image" aria-hidden="true"></i> 文件管理
-            </NavLink>
+        <li class="down-nav">
+            <a href="javascript:void(0);"><i class="iconfont icon-moneycollect"></i> 财务 <i class="arrow iconfont icon-down"></i></a>
+            <ul class="submenu">
+                <li>
+                    <NavLink class="nav-link" href="finance/daybook">
+                        流水帐
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink class="nav-link" href="finance/business">
+                        项目款
+                    </NavLink>
+                </li>
+            </ul>
         </li>
+      
     </ul>
 </nav>
 
 @code {
-    private bool isOpen = false;
-    string OpenClsaaName = string.Empty;
+    
 
     protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
     {
@@ -59,15 +64,11 @@
         if (firstRender)
         {
                await JSRuntime.InvokeVoidAsync("App.SiteInit");
-           // OpenClsaaName = isOpen ? "open" : "";
+     
         }
 
 
     }
 
-    private void OpenSubNav()
-    {
-        isOpen = !isOpen;
-        OpenClsaaName = isOpen ? "open" : "";
-    }
+   
 }

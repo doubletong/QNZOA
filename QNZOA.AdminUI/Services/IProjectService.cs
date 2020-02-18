@@ -14,6 +14,8 @@ namespace QNZOA.AdminUI.Services
 
         Task<Project> Get(int id);
         Task<ProjectDetailVM> GetDetail(int id);
+        Task<IEnumerable<ProjectForSelectVM>> GetForBusinessSelectAsync();
+        Task<IEnumerable<ProjectForSelectVM>> GetForNoBusinessSelectAsync();
         Task<ProjectPagedVM> GetProjectsAsync(int page, int pageSize, string keywords, string orderBy, string orderMode, bool archive, int customerId = 0);
         Task<IEnumerable<UserForSelectVM>> GetProjectUsers(int id);
         Task RemoveProjectUsers(UserProject item);

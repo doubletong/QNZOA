@@ -140,6 +140,11 @@ img {
             margin-left: .3rem;
         }
     }
+    tfoot{
+        td,th{
+            font-weight:bold;
+        }
+    }
 }
 
 .validation-errors {

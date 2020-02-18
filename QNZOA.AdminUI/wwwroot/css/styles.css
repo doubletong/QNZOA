@@ -7292,6 +7292,9 @@ img {
   .table td .btn {
     margin-left: .3rem; }
 
+.table tfoot td, .table tfoot th {
+  font-weight: bold; }
+
 .validation-errors {
   border: 1px #ffc4c4 solid;
   padding: 1rem 3rem;
