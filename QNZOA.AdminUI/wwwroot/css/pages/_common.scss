@@ -2,15 +2,12 @@ body {
     color: #666;
     background-color: #f1f1f1;
     font-family: "Microsoft YaHei", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    padding-top: 50px;
     line-height: 1.8;
     font-size: rem(14);
     @include mq(md) {
-        padding-top: 65px;
     }
     @include mq(lg) {
         font-size: rem(14);
-        padding-top: 80px;
     }
     @include mq(xl) {
         font-size: 1rem;
