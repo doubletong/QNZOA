@@ -88,15 +88,15 @@ namespace QNZOA.AdminUI
             //CreateMap<EmailAccountIM, EmailAccount>();
 
 
-            //CreateMap<LinkCategory, LinkCategoryIM>();
-            //CreateMap<LinkCategoryIM, LinkCategory>();
-            //CreateMap<LinkCategory, LinkCategoryVM>();
+            CreateMap<LinkCategory, LinkCategoryIM>();
+            CreateMap<LinkCategoryIM, LinkCategory>();
+            CreateMap<LinkCategory, LinkCategoryVM>();
 
-            //CreateMap<Link, LinkVM>()
-            //     .ForMember(d => d.CategoryTitle, opt => opt.MapFrom(source => source.Category.Title));
+            CreateMap<Link, LinkVM>()
+                 .ForMember(d => d.CategoryTitle, opt => opt.MapFrom(source => source.Category.Title));
 
-            //CreateMap<Link, LinkIM>();
-            //CreateMap<LinkIM, Link>();
+            CreateMap<Link, LinkIM>();
+            CreateMap<LinkIM, Link>();
 
             //CreateMap<BadgeIM, Badge>();
             //CreateMap<Badge, BadgeIM>();

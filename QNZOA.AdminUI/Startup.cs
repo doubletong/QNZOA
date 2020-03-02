@@ -66,7 +66,8 @@ namespace QNZOA.AdminUI
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IFinanceService, FinanceService>();
             services.AddTransient<IPaymentlogService, PaymentlogService>();
-            
+            services.AddTransient<ILinkService, LinkService>();
+
             services.AddScoped<AuthenticationStateProvider, QNZAuthenticationStateProvider>();
         }
 
@@ -84,7 +85,7 @@ namespace QNZOA.AdminUI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

@@ -1,0 +1,31 @@
+﻿<li class="nav-item dropdown @(IsVisible ? "show" : "")">
+    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @onclick="DropdownList">便签链接</a>
+    <div class="dropdown-menu @(IsVisible ? "show" : "")" aria-labelledby="navbarDropdown">
+        @foreach (KeyValuePair<string, string> kvp in NavList)
+        {
+        <NavLink class="dropdown-item" href="@kvp.Value">
+            @kvp.Key
+        </NavLink>           
+        }
+        @*<NavLink class="dropdown-item" href="links/index">
+            链接
+        </NavLink>
+        <NavLink class="dropdown-item" href="links/categories">
+            分类
+        </NavLink>*@
+    </div>
+</li>
+
+@code {
+
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public Dictionary<string,string> NavList { get; set; }
+
+    private void DropdownList()
+    {
+        IsVisible = !IsVisible;
+    }
+}

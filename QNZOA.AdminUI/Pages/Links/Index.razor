@@ -1,0 +1,230 @@
+﻿@page "/links/index"
+
+
+@attribute [Authorize]
+
+@using QNZOA.AdminUI.Components
+
+@inject IToastService toastService
+@inject ILocalStorageService localStorage
+@inject IHttpClientFactory clientFactory
+@inject ILinkService linkService
+
+
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">链接</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+
+<div class="page-link">
+    <QNZCardComponent Title="链接列表" FontIcon="icon-link">
+        <section class="card-body">
+            <div class="card-toolbar mb-3">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-inline">
+                            <input type="text" class="form-control mr-sm-2" @bind="vm.Keywords" placeholder="关键字" />
+                            <select id="categoryId" @bind="vm.CategoryId" class="form-control mr-sm-2">
+                                <option value="0">请选择 ...</option>
+                                @if (CategoriesList != null)
+                                {
+                                    foreach (var item in CategoriesList)
+                                    {
+                                        <option value="@item.Id">@item.Title</option>
+                                    }
+                                }
+                            </select>
+                            @*<select id="classification" @bind="vm.LinkType" class="form-control mr-sm-2">
+            <option value="0">请选择 ...</option>
+            <option value="2">企业</option>
+            <option value="1">个人</option>
+        </select>*@
+                            <button type="button" class="btn btn-info" @onclick="SearchLinks"><span class="iconfont icon-search"></span> 搜索</button>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <a href="/links/edit" class="btn btn-primary"><span class="iconfont icon-plus"></span> 添加</a>
+                    </div>
+                </div>
+            </div>
+
+
+            @if (vm.ItemList == null)
+            {
+                <div class="d-flex align-items-center">
+                    <strong>加载中...</strong>
+                    <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class='table table-striped table-bordered'>
+                        <thead>
+                            <tr>
+                          
+
+                                <th>缩略图</th>
+                                <th>
+                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="title" HeaderText="标题" OnClick="OrderLinks" />
+                                </th>
+                                <th>分类</th>
+                                <th>链接</th>
+                                <th>激活</th>
+                                <th>
+                                    <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="createdDate" HeaderText="创建时间" OnClick="OrderLinks" />
+                                </th>
+
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in vm.ItemList)
+                            {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.LogoUrl))
+                                    {
+                                        <img src="@item.LogoUrl" style="height:30px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="https://www.fillmurray.com/g/30/30" alt="">
+                                    }
+
+                                </td>
+                                <td>@item.Title</td>
+                                <td>
+                                    @item.CategoryTitle
+                                </td>
+
+                                <td>
+                                    @item.WebLink
+                                </td>                              
+                                <td>
+                                    @if (item.Active == true)
+                                    {
+                                        <input type="checkbox" checked disabled>
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" disabled>
+                                    }
+                                </td>
+                                <td>@string.Format("{0:d}", item.CreatedDate)</td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" href="/Links/@item.Id">
+                                        <i class="iconfont icon-ellipsis"></i>
+                                    </a>
+                                    <a class="btn btn-primary btn-sm" href="/Links/Edit/@item.Id" title="编辑"><i class="iconfont icon-edit"></i></a>
+                                    <button class="btn btn-danger btn-sm" type="button" @onclick="(async () => await DeleteItem(item.Id))" title="删除"><i class="iconfont icon-delete"></i></button>
+
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            }
+        </section>
+        <footer class="card-footer">
+            <div class="row table-pager">
+                <div class="col-md">
+                    <Pagination PageSize="@vm.PageSize"
+                                PageIndex="@vm.PageIndex"
+                                LastPageIndex="@vm.LastPageIndex" ShowPageCount="6"
+                                PageChanged="@(async (e) => await PagerPageChanged(e))" />
+                </div>
+                <div class="col-md-auto">
+                    总记录数：@vm.RowCount 条，页：@(vm.PageIndex + 1) / @(vm.LastPageIndex + 1)
+                </div>
+
+            </div>
+        </footer>
+    </QNZCardComponent>
+</div>
+
+
+
+
+@code {
+    LinkPagedVM vm = new LinkPagedVM();
+    IEnumerable<LinkCategoryForSelectVM> CategoriesList;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+
+        // base.OnAfterRender(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CategoriesList = await linkService.GetForLinkCategorySelectAsync();
+        await RefreshData(1);
+        //   this.StateHasChanged();
+    }
+
+
+    protected async Task PagerPageChanged(int page)
+    {
+        await RefreshData(page);
+    }
+    //搜索
+    private async Task SearchLinks()
+    {
+        await RefreshData(1);
+    }
+
+    private async Task OrderLinks(string orderstr)
+    {
+        vm.OrderBy = orderstr.Split("|")[0];
+        vm.OrderMode = orderstr.Split("|")[1];
+
+        await RefreshData(1);
+    }
+
+    private async Task DeleteItem(int id)
+    {
+        try
+        {
+            await linkService.DeleteLink(id);
+            await RefreshData(vm.PageIndex + 1);
+        }
+        catch (Exception ex)
+        {
+
+            toastService.ShowError(ex.Message);
+        }
+
+    }
+
+    //绑定数据
+    async Task RefreshData(int page)
+    {
+        try
+        {
+
+            vm = await linkService.GetLinksAsync(page, 10, vm.Keywords, vm.OrderBy, vm.OrderMode, vm.CategoryId); //JsonConvert.DeserializeObject<LinkPagedVM>(responseBody);
+            this.StateHasChanged();
+        }
+        catch (AggregateException ex)
+        {
+
+            toastService.ShowError(ex.Message);
+        }
+
+    }
+
+}

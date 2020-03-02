@@ -16,11 +16,13 @@
                 <a class="navbar-brand" id="openav" href="javascript:void(0);" @onclick="ToggleNavMenu"><i class="iconfont icon-menu"></i></a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active"><a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a></li>
+                        @*<li class="nav-item active"><a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a></li>*@
+                        <QNZOA.AdminUI.Components.BSDropdown IsVisible="false" NavList="@NavList" />
+                        
                         <li class="nav-item">
                             <NavLink class="nav-link" href="qnzfinder">
                                 <i class="iconfont icon-image" aria-hidden="true"></i> 文件管理
-                            </NavLink>                          
+                            </NavLink>
                         </li>
                         <li class="nav-item"><a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a></li>
                     </ul>
@@ -67,7 +69,8 @@
 
         string username = string.Empty;
         private bool collapseNavMenu = false;
-      
+        private Dictionary<string,string> NavList = new Dictionary<string,string>();
+
 
         private string NavMenuCssClass => collapseNavMenu ? "wrap-nonav" : null;
 
@@ -75,7 +78,12 @@
         {
             collapseNavMenu = !collapseNavMenu;
         }
-
+        protected override void OnInitialized()
+        {
+          
+            NavList.Add("链接列表", "/links/index");
+            NavList.Add("链接分类", "/links/categories");
+        }
         protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
         {
             //  var islogined = await sessionStorageService.GetItemAsync<bool>("isLogined");
