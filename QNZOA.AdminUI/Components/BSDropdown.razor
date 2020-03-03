@@ -1,5 +1,5 @@
 ﻿<li class="nav-item dropdown @(IsVisible ? "show" : "")">
-    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @onclick="DropdownList">便签链接</a>
+    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="javascript:void(0);" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @onclick="DropdownList">@Ttitle</a>
     <div class="dropdown-menu @(IsVisible ? "show" : "")" aria-labelledby="navbarDropdown">
         @foreach (KeyValuePair<string, string> kvp in NavList)
         {
@@ -17,7 +17,8 @@
 </li>
 
 @code {
-
+      [Parameter]
+    public string Ttitle { get; set; }
     [Parameter]
     public bool IsVisible { get; set; }
 

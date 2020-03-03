@@ -100,7 +100,32 @@ namespace QNZOA.AdminUI.Services
             return vm;
         }
 
+        public async Task<LinkCategory> GetCategoryById(int id)
+        {
+            return await _db.LinkCategories.FindAsync(id);
+        }
 
+        public async Task CreateCategoryAsync(LinkCategoryIM item)
+        {
+            var category = _mapper.Map<LinkCategory>(item);
+            category.CreatedDate = DateTime.Now;
+            category.CreatedBy = await _sessionStorageService.GetItemAsync<string>("username");
+
+            await _db.AddAsync(category);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task UpdateCategoryAsync(int id, LinkCategoryIM item)
+        {
+            var origin = await _db.LinkCategories.FindAsync(id);
+            var category = _mapper.Map(item, origin);
+
+            category.UpdatedDate = DateTime.Now;
+            category.UpdatedBy = await _sessionStorageService.GetItemAsync<string>("username");
+
+            _db.Update(category);
+            await _db.SaveChangesAsync();
+        }
         public async Task DeleteCategory(int id)
         {
             if (await _db.Links.AnyAsync(d => d.CategoryId == id))
@@ -193,7 +218,32 @@ namespace QNZOA.AdminUI.Services
             return vm;
         }
 
+        public async Task<Link> GetLinkById(int id)
+        {
+            return await _db.Links.FindAsync(id);
+        }
 
+        public async Task CreateLinkAsync(LinkIM item)
+        {
+            var link = _mapper.Map<Link>(item);
+            link.CreatedDate = DateTime.Now;
+            link.CreatedBy = await _sessionStorageService.GetItemAsync<string>("username");
+
+            await _db.AddAsync(link);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task UpdateLinkAsync(int id, LinkIM item)
+        {
+            var origin = await _db.Links.FindAsync(id);
+            var link = _mapper.Map(item, origin);
+
+            link.UpdatedDate = DateTime.Now;
+            link.UpdatedBy = await _sessionStorageService.GetItemAsync<string>("username");
+
+            _db.Update(link);
+            await _db.SaveChangesAsync();
+        }
 
         public async Task DeleteLink(int id)
         {          

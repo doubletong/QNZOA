@@ -5,12 +5,9 @@ using System.Text;
 namespace QNZOA.Model
 {
     #region Link
-    public class LinkCategoryForSelectVM
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
+  
 
-    }
+
     public class LinkVM
     {
         public int Id { get; set; }
@@ -73,6 +70,13 @@ namespace QNZOA.Model
 
     #endregion
     #region Category
+
+    public class LinkCategoryForSelectVM
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+
+    }
     public class LinkCategoryVM
     {
         public int Id { get; set; }

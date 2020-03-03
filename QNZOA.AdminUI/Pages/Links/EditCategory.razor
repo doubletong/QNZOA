@@ -1,6 +1,125 @@
 ﻿@page "/links/editcategory"
-<h3>EditCategory</h3>
+@page "/links/editcategory/{Id:int}"
 
+@attribute [Authorize]
+
+@using QNZOA.AdminUI.Components
+
+@inject ILinkService linkService
+@inject IToastService toastService
+@inject AutoMapper.IMapper _mapper
+@inject NavigationManager navigationManager
+
+
+@inject IJSRuntime JSRuntime;
+
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item"><a href="/links/categories">链接分类</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">编辑</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+
+
+<EditForm Model="@CategoryIM" OnValidSubmit="@HandleValidSubmit">
+    <div class="card">
+        <header class="card-header">
+            <div class="row">
+                <div class="col">
+                    <div class="card-title-v1"><i class="iconfont icon-customer"></i>@(Id > 0 ? "编辑项目" : "创建项目")</div>
+                </div>
+                <div class="col-auto">
+                    <div class="control"><a class="expand" href="#"><i class="iconfont icon-fullscreen"></i></a><a class="compress" href="#" style="display: none;"><i class="iconfont icon-shrink"></i></a></div>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="Username">名称</label>
+                <InputText id="Username" @bind-Value="CategoryIM.Title" class="form-control" />
+
+            </div>
+
+            <div class="form-group">
+                <label for="Importance">排序</label>
+                <InputNumber id="Importance" @bind-Value="CategoryIM.Importance" class="form-control" />
+
+            </div>
+
+            <div class="form-group form-check">
+             
+                <InputCheckbox id="exampleCheck1" @bind-Value="CategoryIM.Active" class="form-check-input" />
+                <label class="form-check-label" for="exampleCheck1">激活</label>
+            </div>
+         
+
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-primary" type="submit"><i class="iconfont icon-save"></i>提交</button>
+            <a href="/links/categories" class="btn btn-secondary"><i class="iconfont icon-rollback"></i>返回</a>
+        </div>
+    </div>
+</EditForm>
 @code {
+    [Parameter]
+    public int? Id { get; set; }
+    private LinkCategoryIM CategoryIM = new LinkCategoryIM();
 
+
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+
+        if (Id != null)
+        {
+            var link = await linkService.GetCategoryById(Id.Value);
+            CategoryIM = _mapper.Map<LinkCategoryIM>(link);
+        }
+
+    }
+
+    //private async System.Threading.Tasks.Task HandleOpenFinder()
+    //{
+    //    await JSRuntime.InvokeVoidAsync("App.CallSingleFinder");
+    //}
+
+    private async System.Threading.Tasks.Task HandleValidSubmit()
+    {
+
+        try
+        {
+            if (Id != null)
+            {
+                await linkService.UpdateCategoryAsync(Id.Value, CategoryIM);
+                toastService.ShowSuccess("已成功更新");
+            }
+            else
+            {
+                await linkService.CreateCategoryAsync(CategoryIM);
+                navigationManager.NavigateTo("/links/categories");
+            }
+
+
+
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+
+        }
+    }
 }

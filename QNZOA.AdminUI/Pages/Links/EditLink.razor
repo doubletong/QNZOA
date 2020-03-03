@@ -1,6 +1,163 @@
 ﻿@page "/links/editlink"
-<h3>EditLink</h3>
+@page "/links/editlink/{Id:int}"
+@attribute [Authorize]
 
+
+
+@using QNZOA.AdminUI.Components
+@inject ILinkService linkService
+@inject IProjectService projectService
+@inject IAccountService accountService
+@inject IToastService toastService
+@inject AutoMapper.IMapper _mapper
+@inject NavigationManager navigationManager
+
+
+@inject IJSRuntime JSRuntime;
+
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-md">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">控制面板</a></li>
+                    <li class="breadcrumb-item"><a href="/links/index">链接</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">编辑</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-auto">
+            <time id="sitetime">@DateTime.Now.ToLongDateString()</time>
+        </div>
+    </div>
+</div>
+
+
+<EditForm Model="@LinkItem" OnValidSubmit="@HandleValidSubmit">
+    <div class="card">
+        <header class="card-header">
+            <div class="row">
+                <div class="col">
+                    <div class="card-title-v1"><i class="iconfont icon-link"></i>@(Id > 0 ? "编辑链接" : "创建链接")</div>
+                </div>
+                <div class="col-auto">
+                    <div class="control"><a class="expand" href="#"><i class="iconfont icon-fullscreen"></i></a><a class="compress" href="#" style="display: none;"><i class="iconfont icon-shrink"></i></a></div>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="Username">名称</label>
+                <InputText id="Username" @bind-Value="LinkItem.Title" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <label for="linkId">客户</label>
+                <InputSelectNumber id="linkId" @bind-Value="LinkItem.CategoryId" class="form-control">
+                    <option value="">请选择 ...</option>
+                    @if (CategoryList != null)
+                    {
+                        foreach (var item in CategoryList)
+                        {
+                            <option value="@item.Id">@item.Title</option>
+                        }
+                    }
+                </InputSelectNumber>
+            </div>
+
+
+
+
+            <div class="form-group">
+                <label for="description">描述</label>
+                <InputTextArea id="description" @bind-Value="LinkItem.Description" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="Importance">排序</label>
+                <InputNumber id="Importance" @bind-Value="LinkItem.Importance" class="form-control" />
+
+            </div>
+
+            <div class="form-group form-check">
+
+                <InputCheckbox id="exampleCheck1" @bind-Value="LinkItem.Active" class="form-check-input" />
+                <label class="form-check-label" for="exampleCheck1">激活</label>
+            </div>
+
+
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-primary" type="submit"><i class="iconfont icon-save"></i>提交</button>
+            <a href="/links/index" class="btn btn-secondary"><i class="iconfont icon-rollback"></i>返回</a>
+        </div>
+    </div>
+</EditForm>
 @code {
+    [Parameter]
+    public int? Id { get; set; }
+    private LinkIM LinkItem = new LinkIM();
+    private IEnumerable<LinkCategoryForSelectVM> CategoryList;
+    private IEnumerable<UserForSelectVM> Users;
 
+
+    //protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
+    //{
+
+    //    if (firstRender)
+    //    {
+
+    //        //await JSRuntime.InvokeVoidAsync("RichTextEditor.removeTinymce");
+    //        //await JSRuntime.InvokeVoidAsync("RichTextEditor.loadFullTinymce", "description");
+    //    }
+
+    //    //base.OnAfterRender(firstRender);
+    //}
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        CategoryList = await linkService.GetForLinkCategorySelectAsync();
+        Users = await accountService.GetUsersForSelectAsync();
+        if (Id != null)
+        {
+            var project = await linkService.GetLinkById(Id.Value);
+            LinkItem = _mapper.Map<LinkIM>(project);
+        }
+
+    }
+
+    //private async System.Threading.Tasks.Task HandleOpenFinder()
+    //{
+    //    await JSRuntime.InvokeVoidAsync("App.CallSingleFinder");
+    //}
+
+    private async System.Threading.Tasks.Task HandleValidSubmit()
+    {
+        // ProjectIM.Description = await JSRuntime.InvokeAsync<string>("RichTextEditor.getTinymceContent", "description");
+        try
+        {
+            if (Id != null)
+            {
+                await linkService.UpdateLinkAsync(Id.Value, LinkItem);
+                toastService.ShowSuccess("已成功更新");
+            }
+            else
+            {
+                await linkService.CreateLinkAsync(LinkItem);
+                navigationManager.NavigateTo("/links/index");
+            }
+
+
+
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError(ex.Message);
+
+        }
+    }
 }

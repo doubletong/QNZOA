@@ -27,7 +27,7 @@
     </div>
 </div>
 
-<div class="page-link">
+<div class="page-links">
     <QNZCardComponent Title="链接列表" FontIcon="icon-link">
         <section class="card-body">
             <div class="card-toolbar mb-3">
@@ -45,16 +45,12 @@
                                     }
                                 }
                             </select>
-                            @*<select id="classification" @bind="vm.LinkType" class="form-control mr-sm-2">
-            <option value="0">请选择 ...</option>
-            <option value="2">企业</option>
-            <option value="1">个人</option>
-        </select>*@
+                           
                             <button type="button" class="btn btn-info" @onclick="SearchLinks"><span class="iconfont icon-search"></span> 搜索</button>
                         </div>
                     </div>
                     <div class="col-auto">
-                        <a href="/links/edit" class="btn btn-primary"><span class="iconfont icon-plus"></span> 添加</a>
+                        <a href="/links/editlink" class="btn btn-primary"><span class="iconfont icon-plus"></span> 添加</a>
                     </div>
                 </div>
             </div>
@@ -76,7 +72,7 @@
                           
 
                                 <th>缩略图</th>
-                                <th>
+                                <th style="width:450px;">
                                     <OrderByHeading OrderBy="@vm.OrderBy" OrderMode="@vm.OrderMode" HeaderName="title" HeaderText="标题" OnClick="OrderLinks" />
                                 </th>
                                 <th>分类</th>
@@ -104,7 +100,10 @@
                                     }
 
                                 </td>
-                                <td>@item.Title</td>
+                                <td>
+                                    <h4>@item.Title</h4>
+                                    <small>@item.Description</small>
+                                </td>
                                 <td>
                                     @item.CategoryTitle
                                 </td>
@@ -124,10 +123,8 @@
                                 </td>
                                 <td>@string.Format("{0:d}", item.CreatedDate)</td>
                                 <td>
-                                    <a class="btn btn-info btn-sm" href="/Links/@item.Id">
-                                        <i class="iconfont icon-ellipsis"></i>
-                                    </a>
-                                    <a class="btn btn-primary btn-sm" href="/Links/Edit/@item.Id" title="编辑"><i class="iconfont icon-edit"></i></a>
+                        
+                                    <a class="btn btn-primary btn-sm" href="/links/editlink/@item.Id" title="编辑"><i class="iconfont icon-edit"></i></a>
                                     <button class="btn btn-danger btn-sm" type="button" @onclick="(async () => await DeleteItem(item.Id))" title="删除"><i class="iconfont icon-delete"></i></button>
 
                                 </td>
